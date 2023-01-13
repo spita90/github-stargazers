@@ -23,7 +23,7 @@
     "react-error-boundary": "^3.1.4",
     "react-native": "0.70.5",
     "react-native-root-toast": "^3.3.1",
-    "react-native-svg": "^13.7.0",
+    "react-native-svg": "13.4.0",
     "react-native-web": "~0.18.9",
     "react-redux": "^8.0.5",
     "sentry-expo": "^6.0.0",
