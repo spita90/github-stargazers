@@ -60,7 +60,7 @@ export const AppNavigator = () => {
     );
   }, [language]);
 
-  const menuIcons = {
+  const tabMenuIcons = {
     MainScreen: (focused: boolean) => (
       <Svg width={44} height={32} fillOpacity={focused ? 1 : 0.2} />
     ),
@@ -76,7 +76,7 @@ export const AppNavigator = () => {
     name: keyof HomeTabParamList;
     focused: boolean;
   }) => {
-    const MenuIcon = () => menuIcons[name](focused);
+    const TabMenuIcon = () => tabMenuIcons[name](focused);
     let label = "";
     switch (name) {
       case "MainScreen":
@@ -89,7 +89,7 @@ export const AppNavigator = () => {
 
     return (
       <View style={{ marginTop: 10, marginBottom: 6, alignItems: "center" }}>
-        <MenuIcon />
+        <TabMenuIcon />
         <Text
           color={focused ? "k_tab_text_focused" : "k_tab_text"}
           size="sm"
