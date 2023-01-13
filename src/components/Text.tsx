@@ -23,6 +23,7 @@ export interface Props {
   mtop?: SpacingType | boolean;
   padding?: number;
   allowFontScaling?: boolean;
+  ignoreFontFamily?: boolean;
 }
 
 export function Text({
@@ -38,6 +39,7 @@ export function Text({
   mtop,
   padding,
   allowFontScaling,
+  ignoreFontFamily,
 }: Props) {
   let bg = "#FFFFFF00";
   const [tw] = useTw();
@@ -49,7 +51,9 @@ export function Text({
   };
 
   const fontSize = { fontSize: getSize() };
-  const fontFamily = { fontFamily: "Circular Std Medium" };
+  const fontFamily = !ignoreFontFamily
+    ? { fontFamily: "Circular-Std-Medium" }
+    : undefined;
   const fontStyle: StyleProp<TextStyle> = {
     fontWeight: bold ? (fontSize.fontSize > 20 ? "700" : "600") : "normal",
     textAlign: center ? "center" : "auto",

@@ -3,14 +3,14 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { useCallback, useEffect, useRef } from "react";
 import { Animated, Platform, View } from "react-native";
-import Svg from "react-native-svg";
 import { useSelector } from "react-redux";
 import { i18n } from "../components/core/LanguageLoader";
 import { Text } from "../components/Text";
-import { languageState } from "../redux/store";
+import { languageState } from "../reducers/store";
 import { MainScreen, ProfileScreen, RepoDetailScreen } from "../screens";
+import { GitHubMarkSvg } from "../svgs/GitHubMark";
+import { ProfileIconSvg } from "../svgs/ProfileIcon";
 import { useTw } from "../theme";
-import { Palette } from "../theme/palette";
 import { HomeTabParamList, RootStackParamList } from "./screens";
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -19,14 +19,14 @@ const Tab = createBottomTabNavigator<HomeTabParamList>();
 const ProfileBadge = () => {
   const [tw] = useTw();
 
-  if (
-    //TODO
-    0 === 0
-  )
-    return null;
+  // if (
+  //   //TODO
+  //   0 === 0
+  // )
+  //   return null;
   return (
     <View
-      style={tw`absolute p-[2px] w-[20px] h-[20px] items-center justify-center -top-2 -right-2 rounded-lg bg-primary`}
+      style={tw`absolute p-[2px] w-[20px] h-[20px] items-center justify-center -top-[8px] -right-2 rounded-lg bg-red`}
     />
   );
 };
@@ -46,12 +46,12 @@ export const AppNavigator = () => {
             renderIcon({ name: route.name, focused }),
           tabBarBadge: undefined,
           tabBarStyle: {
-            backgroundColor: Palette.k_tab,
+            backgroundColor: "black",
             height: Platform.OS === "ios" ? 96 : 80,
             borderTopWidth: 0,
+            borderTopRightRadius: 24,
+            borderTopLeftRadius: 24,
           },
-          tabBarActiveTintColor: Palette.backgroundPrimary,
-          tabBarInactiveTintColor: Palette.primary,
         })}
       >
         <Tab.Screen name="MainScreen" component={MainScreen} />
@@ -62,10 +62,20 @@ export const AppNavigator = () => {
 
   const tabMenuIcons = {
     MainScreen: (focused: boolean) => (
-      <Svg width={44} height={32} fillOpacity={focused ? 1 : 0.2} />
+      <GitHubMarkSvg
+        width={44}
+        height={42}
+        color={"white"}
+        fillOpacity={focused ? 1 : 0.6}
+      />
     ),
     ProfileScreen: (focused: boolean) => (
-      <Svg width={44} height={32} fillOpacity={focused ? 1 : 0.2} />
+      <ProfileIconSvg
+        width={44}
+        height={42}
+        color={"white"}
+        fillOpacity={focused ? 1 : 0.6}
+      />
     ),
   };
 
@@ -91,7 +101,7 @@ export const AppNavigator = () => {
       <View style={{ marginTop: 10, marginBottom: 6, alignItems: "center" }}>
         <TabMenuIcon />
         <Text
-          color={focused ? "k_tab_text_focused" : "k_tab_text"}
+          color={focused ? "white" : "white60"}
           size="sm"
           textStyle={{ textAlign: "center" }}
           style={{ marginTop: 6, minWidth: 50 }}
@@ -103,19 +113,19 @@ export const AppNavigator = () => {
     );
   };
 
-  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const fadeInAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    Animated.timing(fadeAnim, {
+    Animated.timing(fadeInAnim, {
       toValue: 1,
-      duration: 600,
+      duration: 300,
       useNativeDriver: Platform.OS !== "web",
     }).start();
   }, []);
 
   return (
     <Animated.View
-      style={[tw`absolute top-0 w-full h-full`, { opacity: fadeAnim }]}
+      style={[tw`absolute top-0 w-full h-full`, { opacity: fadeInAnim }]}
     >
       <NavigationContainer
         documentTitle={{

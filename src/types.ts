@@ -12,3 +12,7 @@ export class DomainError extends Error {
   }
   fatal: boolean;
 }
+
+export type User = {
+  favouriteRepos: string[];
+};
