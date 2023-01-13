@@ -9,12 +9,25 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@expo/webpack-config": "^0.17.2",
+    "@react-native-async-storage/async-storage": "^1.17.11",
+    "@react-navigation/bottom-tabs": "^6.5.3",
+    "@react-navigation/native": "^6.1.2",
+    "@react-navigation/stack": "^6.3.11",
+    "axios": "^1.2.2",
     "expo": "~47.0.12",
-    "expo-status-bar": "~1.4.2",
+    "i18n-js": "^4.2.2",
+    "lottie-react-native": "^5.1.4",
     "react": "18.1.0",
     "react-dom": "18.1.0",
+    "react-error-boundary": "^3.1.4",
     "react-native": "0.70.5",
-    "react-native-web": "~0.18.9"
+    "react-native-root-toast": "^3.3.1",
+    "react-native-svg": "^13.7.0",
+    "react-native-web": "~0.18.9",
+    "react-redux": "^8.0.5",
+    "sentry-expo": "^6.0.0",
+    "twrnc": "^3.5.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
