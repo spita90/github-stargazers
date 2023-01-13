@@ -16,3 +16,22 @@ export class DomainError extends Error {
 export type User = {
   favouriteRepos: string[];
 };
+
+export type Repo = {
+  id: number;
+  name: string;
+  full_name: string;
+  private: boolean;
+  owner: GitHubUser;
+  html_url: string;
+  description: string;
+  stargazers_count: number;
+  language: string; // programming language
+};
+
+export type GitHubUser = {
+  login: string; //username
+  id: number;
+  avatar_url: string;
+  html_url: string;
+};

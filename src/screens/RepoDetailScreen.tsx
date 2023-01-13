@@ -8,7 +8,9 @@ export function RepoDetailScreen() {
 
   return (
     <Screen>
-      <Text>Hello from RepoDetailScreen!</Text>
+      <View style={tw`flex items-center`}>
+        <Text>Hello from RepoDetailScreen!</Text>
+      </View>
     </Screen>
   );
 }

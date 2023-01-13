@@ -5,4 +5,7 @@ export const TRANSLATIONS_EN = {
   ok: "OK",
   mainScreenLabel: "Stargazers",
   profileScreenLabel: "Profile",
+  cannotGetRepoData: "Cannot get repo data",
+  cannotGetRepoStargazers: "Cannot get repo stargazers data",
+  search: "Search",
 };
