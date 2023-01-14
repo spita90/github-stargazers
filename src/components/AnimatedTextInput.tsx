@@ -16,11 +16,13 @@ type Props = React.ComponentProps<typeof TextInput> & {
   textStyle?: StyleProp<TextStyle>;
   labelStyle?: StyleProp<TextStyle>;
   label: string;
+  editable?: boolean;
 };
 
 export const AnimatedTextInput: React.FC<Props> = (props) => {
   const {
     label,
+    editable = true,
     value,
     style,
     textStyle,
@@ -53,12 +55,13 @@ export const AnimatedTextInput: React.FC<Props> = (props) => {
         ref={inputRef}
         {...restOfProps}
         value={value}
+        editable={editable}
         onBlur={(event) => {
           setIsFocused(false);
           onBlur?.(event);
         }}
         onFocus={(event) => {
-          setIsFocused(true);
+          if (editable) setIsFocused(true);
           onFocus?.(event);
         }}
       />

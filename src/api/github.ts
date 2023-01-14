@@ -1,3 +1,4 @@
+import axios, { Axios, AxiosError } from "axios";
 import { DomainError, GitHubUser, Repo } from "../types";
 import { getGitHubClient, noResponse } from "./client";
 
@@ -9,6 +10,12 @@ export const getUserRepos = async (userName: string): Promise<Repo[]> =>
         throw new DomainError("cannotGetUserRepos");
       }
       return response.data;
+    })
+    .catch((e) => {
+      if (isError404NotFound(e)) {
+        return [];
+      }
+      throw new DomainError("cannotGetUserRepos");
     });
 
 export const getRepo = async (
@@ -36,3 +43,12 @@ export const getRepoStargazers = async (
       }
       return response.data;
     });
+
+const isError404NotFound = (e: Error) => {
+  return (
+    axios.isAxiosError(e) &&
+    e.code === AxiosError.ERR_BAD_REQUEST &&
+    e.response &&
+    e.response.status === 404
+  );
+};

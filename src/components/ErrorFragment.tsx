@@ -7,6 +7,7 @@ import { useTw } from "../theme";
 import { DomainError } from "../types";
 import { i18n } from "./core/LanguageLoader";
 import { Text } from ".";
+import { showToast } from "../utils";
 
 export interface ErrorPageProps {
   error: Error;
@@ -33,15 +34,7 @@ export function ErrorFragment({ error, resetErrorBoundary }: ErrorPageProps) {
         error instanceof DomainError
           ? i18n.t((error as DomainError).message)
           : error.message;
-      Toast.show(message, {
-        duration: 5000,
-        position: Toast.positions.BOTTOM,
-        shadow: true,
-        animation: true,
-        hideOnPress: true,
-        backgroundColor: "red",
-        delay: 0,
-      });
+      showToast(message);
     }
   }, []);
 
