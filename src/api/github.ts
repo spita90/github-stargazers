@@ -1,6 +1,16 @@
 import { DomainError, GitHubUser, Repo } from "../types";
 import { getGitHubClient, noResponse } from "./client";
 
+export const getUserRepos = async (userName: string): Promise<Repo[]> =>
+  getGitHubClient()
+    .get<Repo[]>(`users/${userName}/repos`)
+    .then((response) => {
+      if (noResponse(response)) {
+        throw new DomainError("cannotGetUserRepos");
+      }
+      return response.data;
+    });
+
 export const getRepo = async (
   userName: string,
   repoName: string

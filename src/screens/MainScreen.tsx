@@ -1,50 +1,76 @@
+import { FlashList } from "@shopify/flash-list";
 import { useState } from "react";
 import { useErrorHandler } from "react-error-boundary";
-import { TextInput, View } from "react-native";
-import Toast from "react-native-root-toast";
-import { getRepo } from "../api/github";
-import { Button, Screen } from "../components";
+import { View } from "react-native";
+import { getUserRepos } from "../api/github";
+import { AnimatedTextInput, Screen } from "../components";
 import { i18n } from "../components/core/LanguageLoader";
 import { Text } from "../components/Text";
 import { useTw } from "../theme";
+import { Repo } from "../types";
 
 export function MainScreen() {
   const [tw] = useTw();
-  const rootErrorHandler = useErrorHandler();
-  const [userName, setUserName] = useState("");
-  const [repoName, setRepoName] = useState("");
+  const rootErrorhandler = useErrorHandler();
+  const [userName, setUserName] = useState<string>("");
+  const [repoName, setRepoName] = useState<string>("");
+  const [foundRepos, setFoundRepos] = useState<Repo[]>([]);
 
-  const onSearch = async () => {
-    if (userName.trim().length === 0) return showToast("dfsdfsd"); //TODO
-    if (repoName.trim().length === 0) return showToast("grgeafreferf"); //TODO
+  const onFinishedInsertingUsername = async () => {
+    const trimmedUserName = userName.trim();
+    if (trimmedUserName.length === 0) return;
     try {
-      const result = await getRepo(userName.trim(), repoName.trim());
-      console.log(result);
+      const userRepos = await getUserRepos(trimmedUserName.trim());
+      setFoundRepos(userRepos);
     } catch (e) {
-      rootErrorHandler(e);
+      setFoundRepos([]);
+      rootErrorhandler(e);
     }
-  };
-
-  const showToast = (message: string) => {
-    Toast.show(message, {
-      duration: 5000,
-      position: Toast.positions.CENTER,
-      shadow: true,
-      animation: true,
-      hideOnPress: true,
-      backgroundColor: "red",
-      delay: 0,
-    });
   };
 
   return (
     <Screen>
-      <View style={tw`flex items-center`}>
-        <Text>Hello from MainScreen!</Text>
-        <TextInput value={userName} onChangeText={setUserName} />
-        <TextInput value={repoName} onChangeText={setRepoName} />
-        <Button onPress={onSearch}>{i18n.t("search")}</Button>
+      <View style={tw`flex items-center py-xl`}>
+        <View style={tw`flex flex-row justify-center`}>
+          <AnimatedTextInput
+            style={tw`w-[60%]`}
+            textStyle={tw`text-2xl font-bold`}
+            labelStyle={tw`text-lg`}
+            label={i18n.t("userName")}
+            value={userName}
+            onChangeText={setUserName}
+            onBlur={onFinishedInsertingUsername}
+          />
+          <View style={tw`pl-md`}>
+            <Text textStyle={tw`text-8xl`}>/</Text>
+          </View>
+        </View>
+        <AnimatedTextInput
+          style={tw`w-[70%] mt-md ml-xl`}
+          textStyle={tw`text-lg`}
+          label={i18n.t("repoName")}
+          value={repoName}
+          onChangeText={setRepoName}
+        />
       </View>
+      {foundRepos.length > 0 && (
+        <View style={tw`flex flex-1`}>
+          <View
+            style={tw`flex flex-1 p-sm mx-md border-t-3 border-l-3 border-r-3 border-grey rounded-t-lg`}
+          >
+            <FlashList
+              data={foundRepos}
+              renderItem={({ item }) => (
+                <View style={tw`py-sm`}>
+                  <Text textStyle={tw`text-grey`}>{item.name}</Text>
+                </View>
+              )}
+              keyExtractor={(itm) => itm.id.toString()}
+              //estimatedItemSize={52}
+            />
+          </View>
+        </View>
+      )}
     </Screen>
   );
 }

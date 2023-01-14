@@ -5,3 +5,4 @@ export { LoadingFragment } from "./LoadingFragment";
 export { Text } from "./Text";
 export { Button } from "./Button";
 export { Screen } from "./Screen";
+export { AnimatedTextInput } from "./AnimatedTextInput";
