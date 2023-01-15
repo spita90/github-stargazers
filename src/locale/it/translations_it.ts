@@ -6,8 +6,9 @@ export const TRANSLATIONS_IT = {
   mainScreenLabel: "Stargazers",
   profileScreenLabel: "Profilo",
   search: "Cerca",
-  userName: "username",
-  repoName: "nome repo",
+  list: "Lista",
+  userName: "Username",
+  repoName: "Nome repo",
   //erors
   cannotGetRepoData: "Non posso ottenere i dati della repo",
   cannotGetRepoStargazers:

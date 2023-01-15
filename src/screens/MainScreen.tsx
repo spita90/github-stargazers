@@ -1,111 +1,74 @@
-import { FlashList } from "@shopify/flash-list";
-import { useEffect, useState } from "react";
-import { useErrorHandler } from "react-error-boundary";
-import { View } from "react-native";
-import Toast from "react-native-root-toast";
-import { getUserRepos } from "../api/github";
-import { AnimatedTextInput, Screen } from "../components";
+import { useEffect, useRef, useState } from "react";
+import { Animated, Dimensions, Easing, Platform, View } from "react-native";
+import { APP_MAX_WIDTH_PX } from "../../App";
+import {
+  MainListFragment,
+  MainSearchFragment,
+  Screen,
+  Toggle,
+} from "../components";
 import { i18n } from "../components/core/LanguageLoader";
-import { Text } from "../components/Text";
 import { useTw } from "../theme";
-import { Repo } from "../types";
-import { showToast } from "../utils";
 
 export function MainScreen() {
   const [tw] = useTw();
-  const rootErrorhandler = useErrorHandler();
-  const [userName, setUserName] = useState<string>("");
-  const [repoName, setRepoName] = useState<string>("");
-  const [foundRepos, setFoundRepos] = useState<Repo[]>([]);
-  const [filteredRepos, setFilteredRepos] = useState<Repo[]>([]);
+  const [toggleActiveIndex, setToggleActiveIndex] = useState(0);
 
-  const onUserNameChanged = (text: string) => {
-    setUserName(text);
-    setRepoName("");
-    setFoundRepos([]);
-  };
+  const screenWidth = Math.min(
+    APP_MAX_WIDTH_PX,
+    Dimensions.get("screen").width
+  );
 
-  const onRepoNameChanged = (text: string) => {
-    setRepoName(text);
-  };
-
-  const onRepoInputFocused = () => {
-    if (userName.trim().length === 0) showToast(i18n.t("specifyUserNameFirst"));
-  };
-
-  const onFinishedInsertingUsername = async () => {
-    const trimmedUserName = userName.trim();
-    if (trimmedUserName.length === 0) return;
-    try {
-      const userRepos = await getUserRepos(trimmedUserName.trim());
-      if (userRepos.length === 0) showToast(i18n.t("noRepoFound"));
-      setFoundRepos(
-        userRepos.sort((a, b) =>
-          a.stargazers_count > b.stargazers_count ? -1 : 1
-        )
-      );
-    } catch (e) {
-      setFoundRepos([]);
-      rootErrorhandler(e);
-    }
-  };
+  const searchSlideAnim = useRef(new Animated.Value(-screenWidth / 2)).current;
+  const listSlideAnim = useRef(new Animated.Value(screenWidth / 2)).current;
 
   useEffect(() => {
-    const trimmedRepoName = repoName.trim();
-    if (trimmedRepoName.length === 0) return setFilteredRepos(foundRepos);
-    setFilteredRepos(
-      foundRepos.filter((repo) =>
-        repo.name.toLowerCase().includes(trimmedRepoName.toLowerCase())
-      )
-    );
-  }, [foundRepos, repoName]);
+    Animated.timing(searchSlideAnim, {
+      toValue: -(toggleActiveIndex * screenWidth - screenWidth / 2),
+      duration: 500,
+      easing: Easing.bezier(0.4, 0, 0.2, 1),
+      useNativeDriver: Platform.OS !== "web",
+    }).start();
+    Animated.timing(listSlideAnim, {
+      toValue: -(toggleActiveIndex * screenWidth - screenWidth / 2),
+      duration: 500,
+      easing: Easing.bezier(0.4, 0, 0.2, 1),
+      useNativeDriver: Platform.OS !== "web",
+    }).start();
+  }, [toggleActiveIndex]);
 
   return (
     <Screen>
       <View style={tw`flex items-center py-xl`}>
-        <View style={tw`flex flex-row justify-center`}>
-          <AnimatedTextInput
-            style={tw`w-[60%]`}
-            textStyle={tw`text-2xl font-bold`}
-            labelStyle={tw`text-lg`}
-            label={i18n.t("userName")}
-            value={userName}
-            onChangeText={onUserNameChanged}
-            onBlur={onFinishedInsertingUsername}
-          />
-          <View style={tw`pl-md`}>
-            <Text textStyle={tw`text-8xl`}>/</Text>
-          </View>
-        </View>
-        <AnimatedTextInput
-          editable={userName.trim().length > 0}
-          style={tw`w-[70%] mt-md ml-xl`}
-          textStyle={tw`text-lg`}
-          label={i18n.t("repoName")}
-          value={repoName}
-          onFocus={onRepoInputFocused}
-          onChangeText={onRepoNameChanged}
+        <Toggle
+          activeIndex={toggleActiveIndex}
+          setActiveIndex={setToggleActiveIndex}
+          label0={i18n.t("search")}
+          label1={i18n.t("list")}
+          labelStyle={tw`text-xl`}
         />
-      </View>
-      {filteredRepos.length > 0 && (
-        <View style={tw`flex flex-1`}>
-          <View
-            style={tw`flex flex-1 p-sm mx-md border-t-3 border-l-3 border-r-3 border-grey rounded-t-lg`}
+
+        <View style={tw`flex flex-row justify-center`}>
+          <Animated.View
+            style={[
+              tw`bg-red`,
+              { width: screenWidth },
+              { transform: [{ translateX: searchSlideAnim }] },
+            ]}
           >
-            <FlashList
-              data={filteredRepos}
-              showsVerticalScrollIndicator={false}
-              renderItem={({ item }) => (
-                <View style={tw`py-sm`}>
-                  <Text textStyle={tw`text-grey`}>{item.name}</Text>
-                </View>
-              )}
-              keyExtractor={(itm) => itm.id.toString()}
-              //estimatedItemSize={52}
-            />
-          </View>
+            <MainSearchFragment />
+          </Animated.View>
+          <Animated.View
+            style={[
+              tw`bg-yellow`,
+              { width: screenWidth },
+              { transform: [{ translateX: listSlideAnim }] },
+            ]}
+          >
+            <MainListFragment />
+          </Animated.View>
         </View>
-      )}
+      </View>
     </Screen>
   );
 }

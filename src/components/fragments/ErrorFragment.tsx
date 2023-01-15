@@ -2,12 +2,12 @@ import axios from "axios";
 import React, { useEffect } from "react";
 import { View } from "react-native";
 import Toast from "react-native-root-toast";
-import { config } from "../config";
-import { useTw } from "../theme";
-import { DomainError } from "../types";
-import { i18n } from "./core/LanguageLoader";
-import { Text } from ".";
-import { showToast } from "../utils";
+import { config } from "../../config";
+import { useTw } from "../../theme";
+import { DomainError } from "../../types";
+import { i18n } from "../core/LanguageLoader";
+import { Text } from "..";
+import { showToast } from "../../utils";
 
 export interface ErrorPageProps {
   error: Error;

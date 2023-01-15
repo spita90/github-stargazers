@@ -12,7 +12,7 @@ import {
 } from "sentry-expo";
 import { LanguageLoader } from "./src/components";
 import { AppLoader } from "./src/components/core/AppLoader";
-import { ErrorFragment } from "./src/components/ErrorFragment";
+import { ErrorFragment } from "./src/components/fragments/ErrorFragment";
 import { config } from "./src/config";
 import { AppNavigator } from "./src/navigation/AppNavigator";
 import { persistor, store } from "./src/reducers/store";
@@ -42,6 +42,8 @@ const onError = async (error: Error) => {
     await AsyncStorage.clear();
   }
 };
+
+export const APP_MAX_WIDTH_PX = 600;
 
 export default function App() {
   return (
@@ -83,6 +85,6 @@ const styles = StyleSheet.create({
   },
   app: {
     flex: 1,
-    maxWidth: 600,
+    maxWidth: APP_MAX_WIDTH_PX,
   },
 });

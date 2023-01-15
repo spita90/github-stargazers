@@ -4,7 +4,7 @@ import { getGitHubClient, noResponse } from "./client";
 
 export const getUserRepos = async (userName: string): Promise<Repo[]> =>
   getGitHubClient()
-    .get<Repo[]>(`users/${userName}/repos`)
+    .get<Repo[]>(`users/${userName}/repos`, { params: { per_page: 100 } })
     .then((response) => {
       if (noResponse(response)) {
         throw new DomainError("cannotGetUserRepos");

@@ -32,6 +32,7 @@ export const AnimatedTextInput: React.FC<Props> = (props) => {
     ...restOfProps
   } = props;
   const [tw] = useTw();
+
   const [isFocused, setIsFocused] = useState(false);
   const inputRef = useRef<TextInput>(null);
   const focusAnim = useRef(new Animated.Value(0)).current;
@@ -48,10 +49,7 @@ export const AnimatedTextInput: React.FC<Props> = (props) => {
   return (
     <View style={style}>
       <TextInput
-        style={[
-          tw`relative p-6 border-3 border-black rounded-lg text-4`,
-          textStyle,
-        ]}
+        style={[tw`p-6 border-3 border-black rounded-lg text-4`, textStyle]}
         ref={inputRef}
         {...restOfProps}
         value={value}

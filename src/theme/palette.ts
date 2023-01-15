@@ -1,6 +1,6 @@
 export const Palette = {
-  warning: "#f6d524",
   red: "#f93f3e",
+  yellow: "#f6d524",
   background: "#031a15",
   screenBg: "#010D0A",
   white: "#fff",

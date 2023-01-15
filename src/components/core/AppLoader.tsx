@@ -1,7 +1,7 @@
 import { useFonts } from "expo-font";
 import { useEffect, useRef, useState } from "react";
 import { useErrorHandler } from "react-error-boundary";
-import { LoadingFragment } from "../LoadingFragment";
+import { LoadingFragment } from "../fragments/LoadingFragment";
 import { config } from "../../config";
 import { Animated, Platform } from "react-native";
 import { useTw } from "../../theme";
