@@ -72,7 +72,7 @@ export const Toggle = ({
       <Animated.View
         style={[tw`absolute flex w-[50%] mx-lg`, { opacity: textFade1Anim }]}
       >
-        <Text textStyle={[tw`text-center text-white`, labelStyle]}>
+        <Text color="white" textStyle={[tw`text-center`, labelStyle]}>
           {label0}
         </Text>
       </Animated.View>
@@ -84,7 +84,7 @@ export const Toggle = ({
       <Animated.View
         style={[tw`flex w-[50%] mx-lg`, { opacity: textFade0Anim }]}
       >
-        <Text textStyle={[tw`text-center text-white`, labelStyle]}>
+        <Text color="white" textStyle={[tw`text-center`, labelStyle]}>
           {label1}
         </Text>
       </Animated.View>

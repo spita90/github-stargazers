@@ -1,60 +1,84 @@
+import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
+import { CompositeNavigationProp } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
 import { FlashList } from "@shopify/flash-list";
 import { useEffect, useState } from "react";
 import { useErrorHandler } from "react-error-boundary";
-import { View } from "react-native";
-import { AnimatedTextInput, Text } from "..";
-import { getUserRepos } from "../../api/github";
-import { StarIconSvg } from "../../svgs/StarIcon";
+import { ActivityIndicator, View } from "react-native";
+import { AnimatedTextInput, Button, RepoListItem, Text } from "..";
+import { getUserRepos, rateLimitExcedeed } from "../../api/github";
+import { NAV_BAR_HEIGHT_PX } from "../../navigation/AppNavigator";
+import { HomeTabParamList, RootStackParamList } from "../../navigation/screens";
 import { useTw } from "../../theme";
 import { Repo } from "../../types";
 import { showToast } from "../../utils";
 import { i18n } from "../core/LanguageLoader";
 
-export function MainListFragment() {
+export interface MainListFragmentProps {
+  navigation: CompositeNavigationProp<
+    BottomTabNavigationProp<HomeTabParamList, "MainScreen", undefined>,
+    StackNavigationProp<RootStackParamList, keyof RootStackParamList, undefined>
+  >;
+}
+
+export function MainListFragment({ navigation }: MainListFragmentProps) {
   const rootErrorhandler = useErrorHandler();
   const [tw] = useTw();
 
+  const RESULTS_PER_PAGE = 1;
+
   const [userName, setUserName] = useState<string>("");
-  const [repoName, setRepoName] = useState<string>("");
-  const [foundRepos, setFoundRepos] = useState<Repo[]>([]);
-  const [filteredRepos, setFilteredRepos] = useState<Repo[]>([]);
+  const [pagedFoundRepos, setPagedFoundRepos] = useState<Repo[][]>([]);
+  const [page, setPage] = useState<number>(0);
+
+  const [resultViewHeight, setResultViewHeight] = useState<number>(0);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const onFinishedInsertingUsername = () => {
+    setPage(0);
+    setLoading(true);
+    // first username fetch. Get first and second pages in parallel (GitHub pages are 1-indexed)
+    fetchRepos([0, 1]);
+    setLoading(false);
+  };
 
   const onUserNameChanged = (text: string) => {
     setUserName(text);
-    setRepoName("");
-    setFoundRepos([]);
-  };
-
-  const onRepoNameChanged = (text: string) => {
-    setRepoName(text);
-  };
-
-  const onRepoInputFocused = () => {
-    if (userName.trim().length === 0) showToast(i18n.t("specifyUserNameFirst"));
-  };
-
-  const onFinishedInsertingUsername = async () => {
-    const trimmedUserName = userName.trim();
-    if (trimmedUserName.length === 0) return;
-    try {
-      const userRepos = await getUserRepos(trimmedUserName.trim());
-      if (userRepos.length === 0) showToast(i18n.t("noRepoFound"));
-      setFoundRepos(userRepos);
-    } catch (e) {
-      setFoundRepos([]);
-      rootErrorhandler(e);
-    }
+    setPagedFoundRepos([]);
+    setPage(0);
   };
 
   useEffect(() => {
-    const trimmedRepoName = repoName.trim();
-    if (trimmedRepoName.length === 0) return setFilteredRepos(foundRepos);
-    setFilteredRepos(
-      foundRepos.filter((repo) =>
-        repo.name.toLowerCase().includes(trimmedRepoName.toLowerCase())
-      )
-    );
-  }, [foundRepos, repoName]);
+    if (!pagedFoundRepos[page + 1]) {
+      fetchRepos([page + 1]);
+    }
+  }, [page]);
+
+  const fetchRepos = async (pages: number[], fatalIfError: boolean = false) => {
+    const trimmedUserName = userName.trim();
+    if (trimmedUserName.length === 0) return;
+    try {
+      const resultPages = await Promise.all(
+        pages.map(
+          async (page) =>
+            await getUserRepos(trimmedUserName, RESULTS_PER_PAGE, page + 1)
+        )
+      );
+      let pagesFound = [...pagedFoundRepos];
+      resultPages.forEach((resultPage, index) => {
+        pagesFound[pages[index]] = resultPage;
+      });
+      setPagedFoundRepos(pagesFound);
+    } catch (e) {
+      if (fatalIfError) return rootErrorhandler(e);
+      if (rateLimitExcedeed(e)) return showToast(i18n.t("rateLimitExcedeed"));
+      setPagedFoundRepos([]);
+    }
+  };
+
+  const canGoBack = page > 0;
+  const canGoNext =
+    pagedFoundRepos[page + 1] && pagedFoundRepos[page + 1].length > 0;
 
   return (
     <>
@@ -68,46 +92,74 @@ export function MainListFragment() {
           onChangeText={onUserNameChanged}
           onBlur={onFinishedInsertingUsername}
         />
-        <View style={tw`flex pl-md pt-xs`}>
-          <Text textStyle={tw`text-8xl`}>/</Text>
-        </View>
       </View>
-      <AnimatedTextInput
-        editable={userName.trim().length > 0}
-        style={tw`w-[70%] mt-sm ml-xl`}
-        textStyle={tw`text-lg font-bold`}
-        label={i18n.t("repoName")}
-        value={repoName}
-        onFocus={onRepoInputFocused}
-        onChangeText={onRepoNameChanged}
-      />
-      {filteredRepos.length > 0 && (
-        <View style={tw`flex flex-1`}>
+      {pagedFoundRepos[page] && pagedFoundRepos[page].length > 0 && (
+        <View
+          style={tw`h-full mt-md`}
+          onLayout={(event) => {
+            const height = event.nativeEvent.layout.height;
+            if (!height) return;
+            setResultViewHeight(height);
+          }}
+        >
           <View
-            style={tw`flex flex-1 p-sm mx-md mt-md border-t-3 border-l-3 border-r-3 border-grey rounded-t-lg`}
+            style={[
+              { height: resultViewHeight - NAV_BAR_HEIGHT_PX * 1.78 },
+              tw`p-sm mx-lg border-t-3 border-l-3 border-r-3 border-grey rounded-t-lg`,
+            ]}
           >
-            <FlashList
-              data={filteredRepos}
-              showsVerticalScrollIndicator={false}
-              renderItem={({ item }) => (
-                <View style={tw`flex flex-row py-sm`}>
-                  <Text textStyle={tw`text-grey`}>{item.name}</Text>
-                  {item.stargazers_count > 0 && (
-                    <View style={tw`flex flex-row`}>
-                      <Text style={tw`pl-xs`} textStyle={tw`text-grey`}>
-                        {" - "}
-                      </Text>
-                      <StarIconSvg width={15} height={15} />
-                      <Text style={tw`pl-xs`} textStyle={tw`text-grey`}>
-                        {item.stargazers_count}
-                      </Text>
-                    </View>
-                  )}
-                </View>
-              )}
-              keyExtractor={(itm) => itm.id.toString()}
-              //estimatedItemSize={52}
-            />
+            {!loading ? (
+              <FlashList
+                data={pagedFoundRepos[page]}
+                showsVerticalScrollIndicator={false}
+                renderItem={({ item }) => (
+                  <RepoListItem
+                    repo={item}
+                    onPress={() => {
+                      navigation.navigate("RepoDetailScreen", {
+                        devUsername: item.owner.login,
+                        repoName: item.name,
+                      });
+                    }}
+                  />
+                )}
+                keyExtractor={(itm) => itm.id.toString()}
+
+                // estimatedItemSize={43}
+              />
+            ) : (
+              <View
+                style={tw`h-[${resultViewHeight - 235}px] flex justify-center`}
+              >
+                <ActivityIndicator size={40} color="black" />
+              </View>
+            )}
+            {(canGoBack || canGoNext) && (
+              <View style={tw`flex flex-row h-[54px] mt-sm justify-evenly`}>
+                <Button
+                  style={tw`flex flex-1`}
+                  disabled={loading || !canGoBack}
+                  onPress={() => {
+                    if (!canGoBack) return;
+                    // setResultsLoading(true);
+                    setPage(page - 1);
+                  }}
+                >
+                  <Text color="white">{i18n.t("prev")}</Text>
+                </Button>
+                <Button
+                  style={tw`flex flex-1`}
+                  disabled={loading || !canGoNext}
+                  onPress={() => {
+                    if (!canGoNext) return;
+                    // setResultsLoading(true);
+                    setPage(page + 1);
+                  }}
+                >
+                  <Text color={"white"}>{i18n.t("next")}</Text>
+                </Button>
+              </View>
+            )}
           </View>
         </View>
       )}

@@ -3,14 +3,23 @@ export const TRANSLATIONS_EN = {
   yes: "Yes",
   no: "No",
   ok: "OK",
+  back: "Back",
+  prev: "Prev",
+  next: "Next",
   mainScreenLabel: "Stargazers",
   profileScreenLabel: "Profile",
   search: "Search",
   list: "List",
   userName: "Username",
   repoName: "Repo name",
+  specifyUserNameFirst: "Please specify Username first",
+  noRepoFound: "No repo found",
   //errors
+  error: "Error",
   cannotGetRepoData: "Cannot get repo data",
+  repoNotFound: "Repo not found",
   cannotGetRepoStargazers: "Cannot get repo stargazers data",
   cannotGetUserRepos: "Cannot get user repos",
+  rateLimitExcedeed:
+    "You exceeded unauthenticated GitHub API rate limit. Please wait before querying again.",
 };

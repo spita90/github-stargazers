@@ -41,7 +41,7 @@ export function Text({
   allowFontScaling,
   ignoreFontFamily,
 }: Props) {
-  let bg = "#FFFFFF00";
+  let bg = "transparent";
   const [tw] = useTw();
 
   const getSize = () => {
@@ -77,11 +77,11 @@ export function Text({
       allowFontScaling={allowFontScaling}
       numberOfLines={numberOfLines}
       style={[
-        tw`text-${color ?? "black"}`,
         fontSize,
         fontFamily,
         fontStyle,
         textStyle,
+        tw`text-${color ?? "black"}`,
       ]}
     >
       {children}

@@ -17,16 +17,18 @@ type Props = React.ComponentProps<typeof TextInput> & {
   labelStyle?: StyleProp<TextStyle>;
   label: string;
   editable?: boolean;
+  textInputRef?: any;
 };
 
 export const AnimatedTextInput: React.FC<Props> = (props) => {
   const {
-    label,
-    editable = true,
-    value,
-    style,
     textStyle,
     labelStyle,
+    label,
+    editable = true,
+    textInputRef,
+    value,
+    style,
     onBlur,
     onFocus,
     ...restOfProps
@@ -34,7 +36,7 @@ export const AnimatedTextInput: React.FC<Props> = (props) => {
   const [tw] = useTw();
 
   const [isFocused, setIsFocused] = useState(false);
-  const inputRef = useRef<TextInput>(null);
+  const inputRef = textInputRef ?? useRef<TextInput>(null);
   const focusAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -49,7 +51,12 @@ export const AnimatedTextInput: React.FC<Props> = (props) => {
   return (
     <View style={style}>
       <TextInput
-        style={[tw`p-6 border-3 border-black rounded-lg text-4`, textStyle]}
+        style={[
+          tw`p-6 border-3 border-${
+            editable ? "black" : "grey"
+          } rounded-lg text-4`,
+          textStyle,
+        ]}
         ref={inputRef}
         {...restOfProps}
         value={value}

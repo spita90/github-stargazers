@@ -9,3 +9,4 @@ export { Button } from "./Button";
 export { Screen } from "./Screen";
 export { Toggle } from "./Toggle";
 export { AnimatedTextInput } from "./AnimatedTextInput";
+export { RepoListItem } from "./RepoListItem";

@@ -13,6 +13,8 @@ import { ProfileIconSvg } from "../svgs/ProfileIcon";
 import { useTw } from "../theme";
 import { HomeTabParamList, RootStackParamList } from "./screens";
 
+export const NAV_BAR_HEIGHT_PX = 80;
+
 const Stack = createStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<HomeTabParamList>();
 
@@ -47,7 +49,7 @@ export const AppNavigator = () => {
           tabBarBadge: undefined,
           tabBarStyle: {
             backgroundColor: "black",
-            height: Platform.OS === "ios" ? 96 : 80,
+            height: NAV_BAR_HEIGHT_PX,
             borderTopWidth: 0,
             borderTopRightRadius: 24,
             borderTopLeftRadius: 24,

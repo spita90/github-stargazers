@@ -1,16 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import { Animated, Dimensions, Easing, Platform, View } from "react-native";
 import { APP_MAX_WIDTH_PX } from "../../App";
-import {
-  MainListFragment,
-  MainSearchFragment,
-  Screen,
-  Toggle,
-} from "../components";
+import { MainListFragment, Screen, Toggle } from "../components";
 import { i18n } from "../components/core/LanguageLoader";
+import { HomeTabScreenProps } from "../navigation/screens";
 import { useTw } from "../theme";
 
-export function MainScreen() {
+export function MainScreen({
+  navigation,
+  route,
+}: HomeTabScreenProps<"MainScreen">) {
   const [tw] = useTw();
   const [toggleActiveIndex, setToggleActiveIndex] = useState(0);
 
@@ -19,18 +18,28 @@ export function MainScreen() {
     Dimensions.get("screen").width
   );
 
-  const searchSlideAnim = useRef(new Animated.Value(-screenWidth / 2)).current;
-  const listSlideAnim = useRef(new Animated.Value(screenWidth / 2)).current;
+  const searchSlideAnim = useRef(
+    new Animated.Value(-screenWidth * (Platform.OS === "web" ? 0.5 : 2))
+  ).current;
+  const listSlideAnim = useRef(
+    new Animated.Value(screenWidth * (Platform.OS === "web" ? 0.5 : 2))
+  ).current;
 
   useEffect(() => {
     Animated.timing(searchSlideAnim, {
-      toValue: -(toggleActiveIndex * screenWidth - screenWidth / 2),
+      toValue: -(
+        toggleActiveIndex * screenWidth -
+        screenWidth * (Platform.OS === "web" ? 0.5 : 0.75)
+      ),
       duration: 500,
       easing: Easing.bezier(0.4, 0, 0.2, 1),
       useNativeDriver: Platform.OS !== "web",
     }).start();
     Animated.timing(listSlideAnim, {
-      toValue: -(toggleActiveIndex * screenWidth - screenWidth / 2),
+      toValue: -(
+        toggleActiveIndex * screenWidth -
+        screenWidth * (Platform.OS === "web" ? 0.5 : 0.75)
+      ),
       duration: 500,
       easing: Easing.bezier(0.4, 0, 0.2, 1),
       useNativeDriver: Platform.OS !== "web",
@@ -39,7 +48,7 @@ export function MainScreen() {
 
   return (
     <Screen>
-      <View style={tw`flex items-center py-xl`}>
+      <View style={tw`flex h-full items-center py-xl`}>
         <Toggle
           activeIndex={toggleActiveIndex}
           setActiveIndex={setToggleActiveIndex}
@@ -47,25 +56,22 @@ export function MainScreen() {
           label1={i18n.t("list")}
           labelStyle={tw`text-xl`}
         />
-
-        <View style={tw`flex flex-row justify-center`}>
+        <View style={tw`flex flex-row h-full justify-center`}>
           <Animated.View
             style={[
-              tw`bg-red`,
               { width: screenWidth },
               { transform: [{ translateX: searchSlideAnim }] },
             ]}
           >
-            <MainSearchFragment />
+            <MainListFragment navigation={navigation} />
           </Animated.View>
           <Animated.View
             style={[
-              tw`bg-yellow`,
               { width: screenWidth },
               { transform: [{ translateX: listSlideAnim }] },
             ]}
           >
-            <MainListFragment />
+            <MainListFragment navigation={navigation} />
           </Animated.View>
         </View>
       </View>

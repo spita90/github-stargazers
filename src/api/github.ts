@@ -2,9 +2,15 @@ import axios, { Axios, AxiosError } from "axios";
 import { DomainError, GitHubUser, Repo } from "../types";
 import { getGitHubClient, noResponse } from "./client";
 
-export const getUserRepos = async (userName: string): Promise<Repo[]> =>
+export const getUserRepos = async (
+  userName: string,
+  resultsPerPage: number,
+  page: number
+): Promise<Repo[]> =>
   getGitHubClient()
-    .get<Repo[]>(`users/${userName}/repos`, { params: { per_page: 100 } })
+    .get<Repo[]>(`users/${userName}/repos`, {
+      params: { per_page: resultsPerPage, page: page },
+    })
     .then((response) => {
       if (noResponse(response)) {
         throw new DomainError("cannotGetUserRepos");
@@ -15,7 +21,7 @@ export const getUserRepos = async (userName: string): Promise<Repo[]> =>
       if (isError404NotFound(e)) {
         return [];
       }
-      throw new DomainError("cannotGetUserRepos");
+      throw e;
     });
 
 export const getRepo = async (
@@ -29,6 +35,12 @@ export const getRepo = async (
         throw new DomainError("cannotGetRepoData");
       }
       return response.data;
+    })
+    .catch((e) => {
+      if (isError404NotFound(e)) {
+        throw new DomainError("repoNotFound");
+      }
+      throw e;
     });
 
 export const getRepoStargazers = async (
@@ -50,5 +62,15 @@ const isError404NotFound = (e: Error) => {
     e.code === AxiosError.ERR_BAD_REQUEST &&
     e.response &&
     e.response.status === 404
+  );
+};
+
+export const rateLimitExcedeed = (e: any) => {
+  return (
+    axios.isAxiosError(e) &&
+    e.code === AxiosError.ERR_BAD_REQUEST &&
+    e.response &&
+    e.response.status === 403 &&
+    e.response.data.message.includes("API rate limit exceeded")
   );
 };
