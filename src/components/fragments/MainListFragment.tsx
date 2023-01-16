@@ -2,11 +2,22 @@ import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 import { CompositeNavigationProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { FlashList } from "@shopify/flash-list";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useErrorHandler } from "react-error-boundary";
-import { ActivityIndicator, View } from "react-native";
+import {
+  ActivityIndicator,
+  Animated,
+  Dimensions,
+  Easing,
+  Platform,
+  View,
+} from "react-native";
 import { AnimatedTextInput, Button, RepoListItem, Text } from "..";
-import { getUserRepos, rateLimitExcedeed } from "../../api/github";
+import {
+  getUserRepos,
+  isError404NotFound,
+  rateLimitExcedeed,
+} from "../../api/github";
 import { NAV_BAR_HEIGHT_PX } from "../../navigation/AppNavigator";
 import { HomeTabParamList, RootStackParamList } from "../../navigation/screens";
 import { useTw } from "../../theme";
@@ -25,27 +36,32 @@ export function MainListFragment({ navigation }: MainListFragmentProps) {
   const rootErrorhandler = useErrorHandler();
   const [tw] = useTw();
 
-  const RESULTS_PER_PAGE = 1;
+  const RESULTS_PER_PAGE = 20;
 
   const [userName, setUserName] = useState<string>("");
   const [pagedFoundRepos, setPagedFoundRepos] = useState<Repo[][]>([]);
   const [page, setPage] = useState<number>(0);
 
   const [resultViewHeight, setResultViewHeight] = useState<number>(0);
+  const [resultViewVisible, setResultViewVisible] = useState<boolean>(false);
+  const [resultViewToBecomeHidden, setResultViewToBecomeHidden] =
+    useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
 
   const onFinishedInsertingUsername = () => {
+    if (userName.trim().length === 0 || pagedFoundRepos.length > 0) return;
     setPage(0);
     setLoading(true);
+    setResultViewVisible(true);
     // first username fetch. Get first and second pages in parallel (GitHub pages are 1-indexed)
-    fetchRepos([0, 1]);
-    setLoading(false);
+    fetchRepos([0, 1], false, true);
   };
 
   const onUserNameChanged = (text: string) => {
     setUserName(text);
     setPagedFoundRepos([]);
     setPage(0);
+    setResultViewVisible(false);
   };
 
   useEffect(() => {
@@ -54,7 +70,27 @@ export function MainListFragment({ navigation }: MainListFragmentProps) {
     }
   }, [page]);
 
-  const fetchRepos = async (pages: number[], fatalIfError: boolean = false) => {
+  const RESULTS_VIEW_HIDDEN_Y_POS_PX = Dimensions.get("screen").height;
+
+  const resultsViewSlideAnim = useRef(
+    new Animated.Value(RESULTS_VIEW_HIDDEN_Y_POS_PX)
+  ).current;
+
+  useEffect(() => {
+    if (!resultViewVisible) setResultViewToBecomeHidden(true);
+    Animated.timing(resultsViewSlideAnim, {
+      toValue: resultViewVisible ? 0 : RESULTS_VIEW_HIDDEN_Y_POS_PX,
+      duration: 300,
+      easing: Easing.bezier(0.4, 0, 0.2, 1),
+      useNativeDriver: Platform.OS !== "web",
+    }).start();
+  }, [resultViewVisible]);
+
+  const fetchRepos = async (
+    pages: number[],
+    fatalIfError: boolean = false,
+    stopLoading: boolean = false
+  ) => {
     const trimmedUserName = userName.trim();
     if (trimmedUserName.length === 0) return;
     try {
@@ -69,9 +105,11 @@ export function MainListFragment({ navigation }: MainListFragmentProps) {
         pagesFound[pages[index]] = resultPage;
       });
       setPagedFoundRepos(pagesFound);
+      if (stopLoading) setLoading(false);
     } catch (e) {
       if (fatalIfError) return rootErrorhandler(e);
       if (rateLimitExcedeed(e)) return showToast(i18n.t("rateLimitExcedeed"));
+      if (isError404NotFound(e)) return showToast(i18n.t("userNotFound"));
       setPagedFoundRepos([]);
     }
   };
@@ -80,6 +118,7 @@ export function MainListFragment({ navigation }: MainListFragmentProps) {
   const canGoNext =
     pagedFoundRepos[page + 1] && pagedFoundRepos[page + 1].length > 0;
 
+  //TODO flashlist move to top on page change
   return (
     <>
       <View style={tw`flex flex-row justify-center items-center mt-sm`}>
@@ -93,9 +132,12 @@ export function MainListFragment({ navigation }: MainListFragmentProps) {
           onBlur={onFinishedInsertingUsername}
         />
       </View>
-      {pagedFoundRepos[page] && pagedFoundRepos[page].length > 0 && (
-        <View
-          style={tw`h-full mt-md`}
+      {(resultViewVisible || resultViewToBecomeHidden) && (
+        <Animated.View
+          style={[
+            tw`h-full mt-md`,
+            { transform: [{ translateY: resultsViewSlideAnim }] },
+          ]}
           onLayout={(event) => {
             const height = event.nativeEvent.layout.height;
             if (!height) return;
@@ -124,8 +166,7 @@ export function MainListFragment({ navigation }: MainListFragmentProps) {
                   />
                 )}
                 keyExtractor={(itm) => itm.id.toString()}
-
-                // estimatedItemSize={43}
+                estimatedItemSize={100}
               />
             ) : (
               <View
@@ -161,7 +202,7 @@ export function MainListFragment({ navigation }: MainListFragmentProps) {
               </View>
             )}
           </View>
-        </View>
+        </Animated.View>
       )}
     </>
   );

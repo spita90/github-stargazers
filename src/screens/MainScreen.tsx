@@ -1,7 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { Animated, Dimensions, Easing, Platform, View } from "react-native";
 import { APP_MAX_WIDTH_PX } from "../../App";
-import { MainListFragment, Screen, Toggle } from "../components";
+import {
+  MainListFragment,
+  MainSearchFragment,
+  Screen,
+  Toggle,
+} from "../components";
 import { i18n } from "../components/core/LanguageLoader";
 import { HomeTabScreenProps } from "../navigation/screens";
 import { useTw } from "../theme";
@@ -63,7 +68,7 @@ export function MainScreen({
               { transform: [{ translateX: searchSlideAnim }] },
             ]}
           >
-            <MainListFragment navigation={navigation} />
+            <MainSearchFragment navigation={navigation} />
           </Animated.View>
           <Animated.View
             style={[

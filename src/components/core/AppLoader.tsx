@@ -1,13 +1,11 @@
 import { useFonts } from "expo-font";
 import { useEffect, useRef, useState } from "react";
-import { useErrorHandler } from "react-error-boundary";
-import { LoadingFragment } from "../fragments/LoadingFragment";
-import { config } from "../../config";
 import { Animated, Platform } from "react-native";
+import { config } from "../../config";
 import { useTw } from "../../theme";
+import { LoadingFragment } from "../fragments/LoadingFragment";
 
 export function AppLoader({ children }: { children: JSX.Element }) {
-  const rootErrorHandler = useErrorHandler();
   const [appInitialized, setappInitialized] = useState(false);
   const [canRenderChildren, setCanRenderChildren] = useState(false);
   const [tw] = useTw();
@@ -17,17 +15,12 @@ export function AppLoader({ children }: { children: JSX.Element }) {
   });
 
   const initializeApp = async () => {
-    try {
-      //TODO do something
-      setTimeout(
-        () => {
-          setappInitialized(true);
-        },
-        __DEV__ ? 10 : 2300
-      );
-    } catch (e) {
-      rootErrorHandler(e);
-    }
+    setTimeout(
+      () => {
+        setappInitialized(true);
+      },
+      __DEV__ ? 10 : 2300
+    );
   };
 
   useEffect(() => {

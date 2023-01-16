@@ -6,7 +6,7 @@ import { Animated, Platform, View } from "react-native";
 import { useSelector } from "react-redux";
 import { i18n } from "../components/core/LanguageLoader";
 import { Text } from "../components/Text";
-import { languageState } from "../reducers/store";
+import { languageState, userState } from "../reducers/store";
 import { MainScreen, ProfileScreen, RepoDetailScreen } from "../screens";
 import { GitHubMarkSvg } from "../svgs/GitHubMark";
 import { ProfileIconSvg } from "../svgs/ProfileIcon";
@@ -19,25 +19,22 @@ const Stack = createStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<HomeTabParamList>();
 
 const ProfileBadge = () => {
-  const [tw] = useTw();
+  const { ghToken } = useSelector(userState);
+  const profileBadgeShowConditions = [!ghToken];
 
-  // if (
-  //   //TODO
-  //   0 === 0
-  // )
-  //   return null;
-  return (
+  const [tw] = useTw();
+  return profileBadgeShowConditions.some((cond) => cond) ? (
     <View
       style={tw`absolute p-[2px] w-[20px] h-[20px] items-center justify-center -top-[8px] -right-2 rounded-lg bg-red`}
     />
-  );
+  ) : null;
 };
 
 export const AppNavigator = () => {
   const language = useSelector(languageState).language;
   const [tw] = useTw();
 
-  const TabNavigator = useCallback(() => {
+  const TabNavigator = () => {
     return (
       <Tab.Navigator
         initialRouteName={"MainScreen"}
@@ -60,7 +57,7 @@ export const AppNavigator = () => {
         <Tab.Screen name="ProfileScreen" component={ProfileScreen} />
       </Tab.Navigator>
     );
-  }, [language]);
+  };
 
   const tabMenuIcons = {
     MainScreen: (focused: boolean) => (
@@ -92,10 +89,10 @@ export const AppNavigator = () => {
     let label = "";
     switch (name) {
       case "MainScreen":
-        label = i18n.t("mainScreenLabel");
+        label = i18n.t("stargazers");
         break;
       case "ProfileScreen":
-        label = i18n.t("profileScreenLabel");
+        label = i18n.t("profile");
         break;
     }
 

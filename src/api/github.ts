@@ -19,8 +19,28 @@ export const getUserRepos = async (
     })
     .catch((e) => {
       if (isError404NotFound(e)) {
-        return [];
+        throw new DomainError("userNotFound");
       }
+      throw e;
+    });
+
+export const testGHToken = async (token: string): Promise<boolean> =>
+  getGitHubClient()
+    .get<Repo[]>(`users/github/repos`, {
+      params: { per_page: 1 },
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    .then((response) => {
+      if (noResponse(response)) {
+        throw new DomainError("cannotTestToken");
+      }
+      return (
+        !!response.headers["x-ratelimit-limit"] &&
+        Number(response.headers["x-ratelimit-limit"]) > 60
+      );
+    })
+    .catch((e) => {
+      if (isError401BadCredentials(e)) return false;
       throw e;
     });
 
@@ -56,12 +76,22 @@ export const getRepoStargazers = async (
       return response.data;
     });
 
-const isError404NotFound = (e: Error) => {
+export const isError404NotFound = (e: any) => {
   return (
     axios.isAxiosError(e) &&
     e.code === AxiosError.ERR_BAD_REQUEST &&
     e.response &&
     e.response.status === 404
+  );
+};
+
+export const isError401BadCredentials = (e: any) => {
+  return (
+    axios.isAxiosError(e) &&
+    e.code === AxiosError.ERR_BAD_REQUEST &&
+    e.response &&
+    e.response.status === 401 &&
+    e.response.data.message.includes("Bad credentials")
   );
 };
 

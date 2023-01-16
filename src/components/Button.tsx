@@ -10,6 +10,7 @@ import { ColorsType } from "../theme/palette";
 
 export interface ButtonProps extends ViewProps {
   onPress?: () => void;
+  onLongPress?: () => void;
   disabled?: boolean;
   style?: StyleProp<ViewStyle>;
   children?: string | React.ReactNode;
@@ -18,6 +19,7 @@ export interface ButtonProps extends ViewProps {
 
 export const Button: React.FC<ButtonProps> = ({
   onPress,
+  onLongPress,
   disabled,
   style,
   children,
@@ -30,6 +32,11 @@ export const Button: React.FC<ButtonProps> = ({
       onPress={() => {
         if (!disabled && onPress) {
           onPress();
+        }
+      }}
+      onLongPress={() => {
+        if (!disabled && onLongPress) {
+          onLongPress();
         }
       }}
     >

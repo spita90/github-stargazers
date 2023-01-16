@@ -14,6 +14,7 @@ export class DomainError extends Error {
 }
 
 export type User = {
+  ghToken?: string;
   favouriteRepos: string[];
 };
 

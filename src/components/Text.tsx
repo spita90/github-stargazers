@@ -55,7 +55,6 @@ export function Text({
     ? { fontFamily: "Circular-Std-Medium" }
     : undefined;
   const fontStyle: StyleProp<TextStyle> = {
-    fontWeight: bold ? (fontSize.fontSize > 20 ? "700" : "600") : "normal",
     textAlign: center ? "center" : "auto",
   };
 
@@ -81,6 +80,7 @@ export function Text({
         fontFamily,
         fontStyle,
         textStyle,
+        bold ? tw`font-bold` : undefined,
         tw`text-${color ?? "black"}`,
       ]}
     >
