@@ -18,6 +18,21 @@ import { AppNavigator } from "./src/navigation/AppNavigator";
 import { persistor, store } from "./src/reducers/store";
 import { DomainError } from "./src/types";
 
+export const APP_MAX_WIDTH_PX = 600;
+
+// Prevents user from leaving the page.
+// In order for it to work, the user must have interacted
+// a minimum on the page (transient user activation).
+// Unfortunately modern browsers removed support for custom alert messages.
+if (Platform.OS === "web") {
+  window.addEventListener("beforeunload", function (e) {
+    if (!__DEV__) {
+      e.preventDefault();
+      e.returnValue = "";
+    }
+  });
+}
+
 SentryInit({
   dsn: "https://0290e10b60bc4d02959a039c66014912@o4504496397156352.ingest.sentry.io/4504496400957440",
   release: `github-stargazers:v${config.version}`,
@@ -42,8 +57,6 @@ const onError = async (error: Error) => {
     await AsyncStorage.clear();
   }
 };
-
-export const APP_MAX_WIDTH_PX = 600;
 
 export default function App() {
   return (

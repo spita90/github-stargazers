@@ -7,6 +7,7 @@ import { testGHToken } from "../api/github";
 import { AnimatedTextInput, Button, Screen } from "../components";
 import { i18n } from "../components/core/LanguageLoader";
 import { Text } from "../components/Text";
+import { config } from "../config";
 import { HomeTabScreenProps } from "../navigation/screens";
 import { setLanguage } from "../reducers/languageReducer";
 import { userState } from "../reducers/store";
@@ -172,6 +173,9 @@ export function ProfileScreen({
           </View>
         </ScrollView>
       </View>
+      <Text style={tw`absolute right-3 top-[6px]`} size={"sm"} color="grey">
+        v{config.version}
+      </Text>
     </Screen>
   );
 }

@@ -12,6 +12,7 @@ export const TRANSLATIONS_IT = {
   list: "Lista",
   userName: "Username",
   repoName: "Nome repo",
+  language: "Linguaggio",
   ghTokenDisclaimer:
     "Crea un Personal Access Token su GitHub per poter togliere i limiti di ricerca (circa 60 richieste all'ora). Una volta creato inseriscilo qui e premi Salva.",
   moreInfo: "Maggiori informazioni",

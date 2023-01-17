@@ -14,10 +14,13 @@ const userSlice = createSlice({
     _setGHToken(state, action: PayloadAction<string>) {
       state.ghToken = Buffer.from(action.payload).toString("base64");
     },
-    _addFavouriteRepo(state, action: PayloadAction<string>) {
+    _setStarred(state, action: PayloadAction<string[]>) {
+      state.favouriteRepos = action.payload;
+    },
+    _starRepo(state, action: PayloadAction<string>) {
       state.favouriteRepos.push(action.payload);
     },
-    _removeFavouriteRepo(state, action: PayloadAction<string>) {
+    _unstarRepo(state, action: PayloadAction<string>) {
       state.favouriteRepos = state.favouriteRepos.filter(
         (itm) => itm !== action.payload
       );
@@ -28,7 +31,7 @@ const userSlice = createSlice({
   },
 });
 
-const { _setGHToken, _addFavouriteRepo, _removeFavouriteRepo, _wipe } =
+const { _setGHToken, _setStarred, _starRepo, _unstarRepo, _wipe } =
   userSlice.actions;
 
 /**
@@ -39,12 +42,16 @@ export const setGHToken = async (token: string) => {
   store.dispatch(_setGHToken(token));
 };
 
-export const addFavouriteRepo = async (repoUrl: string) => {
-  store.dispatch(_addFavouriteRepo(repoUrl));
+export const setStarred = async (repoUrls: string[]) => {
+  store.dispatch(_setStarred(repoUrls));
 };
 
-export const removeFavouriteRepo = async (repoUrl: string) => {
-  store.dispatch(_removeFavouriteRepo(repoUrl));
+export const starRepo = async (repoUrl: string) => {
+  store.dispatch(_starRepo(repoUrl));
+};
+
+export const unstarRepo = async (repoUrl: string) => {
+  store.dispatch(_unstarRepo(repoUrl));
 };
 
 export const wipeUser = () => store.dispatch(_wipe());

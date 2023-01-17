@@ -18,13 +18,13 @@ export function RepoListItem({ repo, onPress }: RepoListItemProps) {
       style={tw`flex flex-row items-center py-sm border-b-[1px] border-grey`}
       onPress={onPress}
     >
-      <Text>{repo.name}</Text>
+      <Text numberOfLines={1}>{repo.name}</Text>
       {repo.stargazers_count > 0 && (
         <View style={tw`flex flex-row items-center`}>
           <Text>{" - "}</Text>
           <StarIconSvg width={15} height={15} color="grey" />
           <Text style={tw`pl-xs`}>{repo.stargazers_count}</Text>
-        </View> //TODO implementa setFavourites
+        </View>
       )}
     </TouchableOpacity>
   );

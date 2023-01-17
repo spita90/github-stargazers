@@ -26,6 +26,7 @@ export type Repo = {
   owner: GitHubUser;
   html_url: string;
   description: string;
+  created_at: string;
   stargazers_count: number;
   language: string; // programming language
 };

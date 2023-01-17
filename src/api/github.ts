@@ -1,4 +1,4 @@
-import axios, { Axios, AxiosError } from "axios";
+import axios, { AxiosError } from "axios";
 import { DomainError, GitHubUser, Repo } from "../types";
 import { getGitHubClient, noResponse } from "./client";
 

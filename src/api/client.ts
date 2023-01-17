@@ -6,6 +6,8 @@ import { Buffer } from "buffer";
 import { Platform } from "react-native";
 
 const githubApiBaseUrl = "https://api.github.com";
+const githubAcceptHeader = "application/vnd.github+json";
+const githubApiVersion = "2022-11-28";
 
 let _gitHubClient: AxiosInstance;
 
@@ -27,6 +29,16 @@ export const getGitHubClient = () => {
     _gitHubClient = axios.create({
       baseURL: githubApiBaseUrl,
     });
+
+    _gitHubClient.defaults.headers.common["Accept"] = githubAcceptHeader;
+
+    // When in browser, if this header is specified, the request will be
+    // CORS-blocked. No problem in native mode.
+    // It is a known issue in GitHub API. See
+    // https://github.com/orgs/community/discussions/40619
+    if (Platform.OS !== "web")
+      _gitHubClient.defaults.headers.common["X-GitHub-Api-Version"] =
+        githubApiVersion;
 
     _gitHubClient.interceptors.request.use(async (request) => {
       const { userState } = store.getState();
