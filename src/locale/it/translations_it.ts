@@ -10,9 +10,11 @@ export const TRANSLATIONS_IT = {
   profile: "Profilo",
   search: "Cerca",
   list: "Lista",
+  repos: "Repo",
   userName: "Username",
   repoName: "Nome repo",
   language: "Linguaggio",
+  showStargazers: "Mostra stargazers",
   ghTokenDisclaimer:
     "Crea un Personal Access Token su GitHub per poter togliere i limiti di ricerca (circa 60 richieste all'ora). Una volta creato inseriscilo qui e premi Salva.",
   moreInfo: "Maggiori informazioni",
@@ -39,5 +41,5 @@ export const TRANSLATIONS_IT = {
   cannotGetUserRepos: "Non posso ottenere le repo dell'utente",
   cannotTestToken: "Non posso testare il token",
   rateLimitExcedeed:
-    "Hai superato la soglia di richieste GitHub API per utenti non autenticati. Per favore attendere prima di fare nuove ricerche.",
+    "Hai superato la soglia di richieste GitHub API per utenti non autenticati. Per favore attendere prima di fare nuove ricerche. Assicurati di aver impostato un token nel tuo Profilo",
 };

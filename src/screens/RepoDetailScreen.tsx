@@ -1,21 +1,23 @@
-import { useEffect, useState } from "react";
+import moment from "moment";
+import { useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Dimensions,
+  Image,
   Linking,
   Platform,
   ScrollView,
   View,
 } from "react-native";
-import { getRepo } from "../api/github";
-import { Button, Screen } from "../components";
+import { getRepo, getRepoStargazers, rateLimitExcedeed } from "../api/github";
+import { Button, Screen, SlidingPagedList } from "../components";
 import { i18n } from "../components/core/LanguageLoader";
 import { Text } from "../components/Text";
 import { RootStackScreenProps } from "../navigation/screens";
-import { useTw } from "../theme";
-import { Repo } from "../types";
-import moment from "moment";
 import { StarIconSvg } from "../svgs/StarIcon";
+import { useTw } from "../theme";
+import { GitHubUser, GitHubRepo } from "../types";
+import { showToast } from "../utils";
 
 export function RepoDetailScreen({
   navigation,
@@ -23,13 +25,23 @@ export function RepoDetailScreen({
 }: RootStackScreenProps<"RepoDetailScreen">) {
   const { devUsername, repoName } = route.params;
 
+  const RESULTS_PER_PAGE = 30;
+  const HEADER_HEIGHT_PX = 100;
+
   const [tw] = useTw();
   const [dateFormat, setDateFormat] = useState<string>();
-  const [repo, setRepo] = useState<Repo>();
+  const [repo, setRepo] = useState<GitHubRepo>();
+  const [pagedRepoStargazers, setPagedRepoStargazers] = useState<
+    GitHubUser[][]
+  >([]);
+  const [page, setPage] = useState<number>(0);
+  const [stargazersViewVisible, setStargazersResultViewVisible] =
+    useState<boolean>(false);
+  const stargazersViewRef = useRef(null);
 
   const boldCondition = Platform.OS !== "web";
   const languageShowCondition = !!repo && repo.language !== null;
-  const stargazersCountShowCondition = !!repo && repo.stargazers_count > 0;
+  const stargazersShowCondition = !!repo && repo.stargazers_count > 0;
 
   useEffect(() => {
     switch (i18n.locale) {
@@ -50,20 +62,56 @@ export function RepoDetailScreen({
   };
 
   useEffect(() => {
-    if (!!repo && stargazersCountShowCondition) {
-      fetchStargazers();
+    if (!!repo && stargazersShowCondition) {
+      fetchStargazers([0, 1]);
     }
   }, [repo]);
 
-  const fetchStargazers = async () => {
+  useEffect(() => {
+    //@ts-ignore
+    stargazersViewRef.current?.rlvRef.scrollToOffset(0, 0, false, false);
+    if (!pagedRepoStargazers[page + 1]) {
+      fetchStargazers([page + 1]);
+    }
+  }, [page]);
+
+  const fetchStargazers = async (
+    pages: number[],
+    showResults: boolean = false
+  ) => {
     try {
-      const repo = await getRepo(devUsername, repoName);
-      setRepo(repo);
-    } catch (e) {}
+      const resultStargazers = await Promise.all(
+        pages.map(
+          async (page) =>
+            await getRepoStargazers(
+              devUsername,
+              repoName,
+              RESULTS_PER_PAGE,
+              page + 1
+            )
+        )
+      );
+      let stargazersFound = [...pagedRepoStargazers];
+      resultStargazers.forEach((resultPage, index) => {
+        stargazersFound[pages[index]] = resultPage;
+      });
+      setPagedRepoStargazers(stargazersFound);
+      if (showResults) {
+        setStargazersResultViewVisible(true);
+      }
+    } catch (e) {
+      if (rateLimitExcedeed(e)) return showToast(i18n.t("rateLimitExcedeed"));
+      setPagedRepoStargazers([]);
+    }
   };
 
   const Header = () => (
-    <View style={tw`flex flex-row h-[100px] w-full justify-center bg-grey50`}>
+    <View
+      style={[
+        { height: HEADER_HEIGHT_PX },
+        tw`flex flex-row w-full justify-center bg-grey50`,
+      ]}
+    >
       <Button
         style={tw`flex-1 rounded-7 py-sm m-md`}
         onPress={() => {
@@ -75,11 +123,8 @@ export function RepoDetailScreen({
         </Text>
       </Button>
       <View style={tw`flex flex-3 justify-center items-start`}>
-        {dateFormat && (
-          <Text
-            style={tw`self-end mx-sm bg-grey50 p-md rounded-lg`}
-            textStyle={tw`text-4xl`}
-          >
+        {dateFormat && repo && (
+          <Text style={tw`self-end mx-sm p-md`} textStyle={tw`text-4xl`}>
             {moment(repo?.created_at).format(dateFormat)}
           </Text>
         )}
@@ -120,9 +165,9 @@ export function RepoDetailScreen({
             {repo?.description}
           </Text>
         )}
-        {(languageShowCondition || stargazersCountShowCondition) && (
+        {(languageShowCondition || stargazersShowCondition) && (
           <View style={tw`flex flex-row items-center mt-md`}>
-            {stargazersCountShowCondition && (
+            {stargazersShowCondition && (
               <View style={tw`flex flex-row flex-1 items-center`}>
                 <Text style={tw`px-xs`} textStyle={tw`text-4xl`}>
                   {repo.stargazers_count}
@@ -131,7 +176,7 @@ export function RepoDetailScreen({
               </View>
             )}
             {languageShowCondition && (
-              <View style={tw`flex flex-1 items-end`}>
+              <View style={tw`flex flex-2 items-end`}>
                 <Text numberOfLines={1}>{`${i18n.t("language")}: ${
                   repo.language
                 }`}</Text>
@@ -139,7 +184,22 @@ export function RepoDetailScreen({
             )}
           </View>
         )}
+        {stargazersShowCondition && (
+          <Button
+            style={tw`mt-lg`}
+            onPress={() => setStargazersResultViewVisible(true)}
+          >
+            <Text color="white">{i18n.t("showStargazers")}</Text>
+          </Button>
+        )}
       </View>
+    </View>
+  );
+
+  const renderListItem = (user: GitHubUser) => (
+    <View style={tw`flex flex-row`}>
+      <Image source={{ uri: user.avatar_url }} style={tw`h-[30px] w-[30px]`} />
+      <Text>{user.login}</Text>
     </View>
   );
 
@@ -151,16 +211,39 @@ export function RepoDetailScreen({
     </View>
   );
 
-  //TODO star icon must be shown and clickable (star/unstar)!
+  //TODO star/unstar
+
   return (
     <Screen>
       <View style={tw`flex items-center`}>
         <Header />
         {repo ? (
-          <ScrollView style={tw`w-full`}>
-            <AboveTheFold />
-            <BelowTheFold />
-          </ScrollView>
+          <>
+            <ScrollView style={tw`w-full`}>
+              <AboveTheFold />
+              <BelowTheFold />
+            </ScrollView>
+            {/* <View
+                style={[
+                  { height: Dimensions.get("window").height },
+                  tw`absolute bottom-0 w-full bg-transparent`,
+                ]}
+              > */}
+            <SlidingPagedList
+              dataMatrix={pagedRepoStargazers}
+              renderItem={renderListItem}
+              page={page}
+              setPage={setPage}
+              visible={stargazersViewVisible}
+              setVisible={setStargazersResultViewVisible}
+              title={i18n.t("stargazers")}
+              backgroundColor="white"
+              // estimatedItemSize={} //TODO
+              height={Dimensions.get("window").height - 466}
+              listRef={stargazersViewRef}
+            />
+            {/* </View> */}
+          </>
         ) : (
           <LoadingPlaceholder />
         )}

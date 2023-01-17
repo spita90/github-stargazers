@@ -2,16 +2,17 @@ import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 import { CompositeNavigationProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { useEffect, useRef, useState } from "react";
-import { ActivityIndicator, View } from "react-native";
+import { ActivityIndicator, Dimensions, Platform, View } from "react-native";
 import { AnimatedTextInput, RepoListItem, SlidingPagedList } from "..";
 import {
   getUserRepos,
   isError404NotFound,
   rateLimitExcedeed,
 } from "../../api/github";
+import { NAV_BAR_HEIGHT_PX } from "../../navigation/AppNavigator";
 import { HomeTabParamList, RootStackParamList } from "../../navigation/screens";
 import { useTw } from "../../theme";
-import { Repo } from "../../types";
+import { GitHubRepo } from "../../types";
 import { showToast } from "../../utils";
 import { i18n } from "../core/LanguageLoader";
 
@@ -29,13 +30,17 @@ export function MainListFragment({ navigation }: MainListFragmentProps) {
 
   const resultsViewRef = useRef(null);
   const [userName, setUserName] = useState<string>("");
-  const [pagedFoundRepos, setPagedFoundRepos] = useState<Repo[][]>([]);
+  const [pagedFoundRepos, setPagedFoundRepos] = useState<GitHubRepo[][]>([]);
   const [page, setPage] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
   const [resultViewVisible, setResultViewVisible] = useState<boolean>(false);
 
   const onFinishedInsertingUsername = () => {
-    if (userName.trim().length === 0 || pagedFoundRepos.length > 0) return;
+    if (
+      userName.trim().length === 0 ||
+      (resultViewVisible && pagedFoundRepos.length > 0)
+    )
+      return;
     setPage(0);
     setLoading(true);
     // First username fetch.
@@ -53,7 +58,7 @@ export function MainListFragment({ navigation }: MainListFragmentProps) {
 
   useEffect(() => {
     //@ts-ignore
-    resultsViewRef.current.rlvRef.scrollToOffset(0, 0, false, false);
+    resultsViewRef.current?.rlvRef.scrollToOffset(0, 0, false, false);
     if (!pagedFoundRepos[page + 1]) {
       fetchRepos([page + 1]);
     }
@@ -88,7 +93,7 @@ export function MainListFragment({ navigation }: MainListFragmentProps) {
     }
   };
 
-  const renderListItem = (repo: Repo) => (
+  const renderListItem = (repo: GitHubRepo) => (
     <RepoListItem
       repo={repo}
       onPress={() => {
@@ -101,8 +106,8 @@ export function MainListFragment({ navigation }: MainListFragmentProps) {
   );
 
   return (
-    <>
-      <View style={tw`flex flex-row justify-center items-center mt-sm`}>
+    <View>
+      <View style={[tw`flex flex-row justify-center items-center mt-sm`]}>
         <AnimatedTextInput
           style={tw`w-[70%]`}
           textStyle={tw`text-2xl font-bold`}
@@ -124,8 +129,12 @@ export function MainListFragment({ navigation }: MainListFragmentProps) {
         page={page}
         setPage={setPage}
         visible={resultViewVisible}
+        setVisible={setResultViewVisible}
+        title={i18n.t("repos")}
+        estimatedItemSize={100}
+        height={Dimensions.get("window").height - 286}
         listRef={resultsViewRef}
       />
-    </>
+    </View>
   );
 }

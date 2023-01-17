@@ -15,10 +15,9 @@ export class DomainError extends Error {
 
 export type User = {
   ghToken?: string;
-  favouriteRepos: string[];
 };
 
-export type Repo = {
+export type GitHubRepo = {
   id: number;
   name: string;
   full_name: string;

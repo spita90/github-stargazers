@@ -1,9 +1,9 @@
 import { FlashList } from "@shopify/flash-list";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { Animated, Dimensions, Easing, Platform, View } from "react-native";
 import { Button, Text } from ".";
-import { NAV_BAR_HEIGHT_PX } from "../navigation/AppNavigator";
 import { useTw } from "../theme";
+import { ColorsType } from "../theme/palette";
 import { i18n } from "./core/LanguageLoader";
 
 export interface SlidingPagedListProps {
@@ -12,6 +12,11 @@ export interface SlidingPagedListProps {
   page: number;
   setPage: (page: number) => void;
   visible: boolean;
+  setVisible: (visible: boolean) => void;
+  title?: string;
+  backgroundColor?: ColorsType;
+  estimatedItemSize?: number;
+  height: number;
   listRef?: any;
 }
 
@@ -21,13 +26,16 @@ export const SlidingPagedList = ({
   page,
   setPage,
   visible,
+  setVisible,
+  title,
+  backgroundColor,
+  estimatedItemSize,
+  height,
   listRef,
 }: SlidingPagedListProps) => {
   const [tw] = useTw();
 
   const RESULTS_VIEW_HIDDEN_Y_POS_PX = Dimensions.get("window").height;
-
-  const [resultViewHeight, setResultViewHeight] = useState<number>(0);
 
   const resultsViewSlideAnim = useRef(
     new Animated.Value(RESULTS_VIEW_HIDDEN_Y_POS_PX)
@@ -70,35 +78,47 @@ export const SlidingPagedList = ({
     </View>
   );
 
+  const ListHeader = () => (
+    <View
+      style={tw`flex flex-row items-center justify-between pb-md border-b-[1px]`}
+    >
+      {title && (
+        <Text textStyle={tw`text-xl`} bold>
+          {title}
+        </Text>
+      )}
+      <Button style={tw`px-sm py-xs z-10`} onPress={() => setVisible(false)}>
+        <Text color="white">X</Text>
+      </Button>
+    </View>
+  );
+
   return (
     <Animated.View
       style={[
-        tw`h-full mt-md`,
+        { backgroundColor: backgroundColor },
+        tw`mt-md p-sm mx-lg 
+        border-t-3 border-l-3 border-r-3 border-grey 
+        rounded-t-lg`,
+        { height: height },
+        {
+          // position: "absolute",
+          // bottom: 0,
+          // maxHeight: Dimensions.get("window").height - 200,
+        }, // modal mode
         { transform: [{ translateY: resultsViewSlideAnim }] },
       ]}
-      onLayout={(event) => {
-        const height = event.nativeEvent.layout.height;
-        if (!height) return;
-        setResultViewHeight(height);
-      }}
     >
-      <View
-        style={[
-          { height: resultViewHeight - NAV_BAR_HEIGHT_PX - 60 },
-          tw`p-sm mx-lg border-t-3 border-l-3 border-r-3 border-grey rounded-t-lg`,
-        ]}
-      >
-        <FlashList
-          ref={listRef}
-          data={dataMatrix[page]}
-          showsVerticalScrollIndicator={false}
-          renderItem={({ item }) => renderItem(item)}
-          keyExtractor={(itm) => itm.id.toString()}
-          estimatedItemSize={100}
-        />
-
-        {(canGoBack || canGoNext) && <NavButtons />}
-      </View>
+      <ListHeader />
+      <FlashList
+        ref={listRef}
+        data={dataMatrix[page]}
+        showsVerticalScrollIndicator={false}
+        renderItem={({ item }) => renderItem(item)}
+        keyExtractor={(itm) => itm.id.toString()}
+        estimatedItemSize={estimatedItemSize}
+      />
+      {(canGoBack || canGoNext) && <NavButtons />}
     </Animated.View>
   );
 };

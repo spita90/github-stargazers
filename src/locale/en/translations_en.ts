@@ -10,9 +10,11 @@ export const TRANSLATIONS_EN = {
   profile: "Profile",
   search: "Search",
   list: "List",
+  repos: "Repos",
   userName: "Username",
   repoName: "Repo name",
   language: "Language",
+  showStargazers: "Show stargazers",
   ghTokenPresent: "GitHub token present",
   ghTokenDisclaimer:
     "Create a GitHub Personal Access Token to remove query limits (about 60 requests per hour). Once created please paste it here and press Save.",
@@ -38,5 +40,5 @@ export const TRANSLATIONS_EN = {
   cannotGetUserRepos: "Cannot get user repos",
   cannotTestToken: "Cannot test token",
   rateLimitExcedeed:
-    "You exceeded unauthenticated GitHub API rate limit. Please wait before querying again.",
+    "You exceeded unauthenticated GitHub API rate limit. Please wait before querying again. Be sure you set a token in your Profile",
 };

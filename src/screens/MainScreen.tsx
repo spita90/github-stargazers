@@ -53,7 +53,7 @@ export function MainScreen({
 
   return (
     <Screen>
-      <View style={tw`flex h-full items-center py-xl`}>
+      <View style={tw`flex items-center py-xl`}>
         <Toggle
           activeIndex={toggleActiveIndex}
           setActiveIndex={setToggleActiveIndex}
@@ -61,7 +61,7 @@ export function MainScreen({
           label1={i18n.t("list")}
           labelStyle={tw`text-xl`}
         />
-        <View style={tw`flex flex-row h-full justify-center`}>
+        <View style={tw`flex flex-row justify-center`}>
           <Animated.View
             style={[
               { width: screenWidth },

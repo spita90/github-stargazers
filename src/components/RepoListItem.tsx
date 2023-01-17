@@ -3,10 +3,10 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { Text } from ".";
 import { StarIconSvg } from "../svgs/StarIcon";
 import { useTw } from "../theme";
-import { Repo } from "../types";
+import { GitHubRepo } from "../types";
 
 export interface RepoListItemProps {
-  repo: Repo;
+  repo: GitHubRepo;
   onPress?: () => void;
 }
 

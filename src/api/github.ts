@@ -1,14 +1,14 @@
 import axios, { AxiosError } from "axios";
-import { DomainError, GitHubUser, Repo } from "../types";
+import { DomainError, GitHubUser, GitHubRepo } from "../types";
 import { getGitHubClient, noResponse } from "./client";
 
 export const getUserRepos = async (
   userName: string,
   resultsPerPage: number,
   page: number
-): Promise<Repo[]> =>
+): Promise<GitHubRepo[]> =>
   getGitHubClient()
-    .get<Repo[]>(`users/${userName}/repos`, {
+    .get<GitHubRepo[]>(`users/${userName}/repos`, {
       params: { per_page: resultsPerPage, page: page },
     })
     .then((response) => {
@@ -26,7 +26,7 @@ export const getUserRepos = async (
 
 export const testGHToken = async (token: string): Promise<boolean> =>
   getGitHubClient()
-    .get<Repo[]>(`users/github/repos`, {
+    .get<GitHubRepo[]>(`users/github/repos`, {
       params: { per_page: 1 },
       headers: { Authorization: `Bearer ${token}` },
     })
@@ -47,9 +47,9 @@ export const testGHToken = async (token: string): Promise<boolean> =>
 export const getRepo = async (
   userName: string,
   repoName: string
-): Promise<Repo> =>
+): Promise<GitHubRepo> =>
   getGitHubClient()
-    .get<Repo>(`repos/${userName}/${repoName}`)
+    .get<GitHubRepo>(`repos/${userName}/${repoName}`)
     .then((response) => {
       if (noResponse(response)) {
         throw new DomainError("cannotGetRepoData");
@@ -65,10 +65,14 @@ export const getRepo = async (
 
 export const getRepoStargazers = async (
   userName: string,
-  repoName: string
+  repoName: string,
+  resultsPerPage: number,
+  page: number
 ): Promise<GitHubUser[]> =>
   getGitHubClient()
-    .get<GitHubUser[]>(`repos/${userName}/${repoName}/stargazers`)
+    .get<GitHubUser[]>(`repos/${userName}/${repoName}/stargazers`, {
+      params: { per_page: resultsPerPage, page: page },
+    })
     .then((response) => {
       if (noResponse(response)) {
         throw new DomainError("cannotGetRepoStargazers");
