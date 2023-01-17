@@ -1,7 +1,7 @@
 import Lottie from "lottie-react-native";
-import { Platform, View, Image } from "react-native";
-import { useTw } from "../../theme";
+import { Image, View } from "react-native";
 import { Text } from "..";
+import { useTw } from "../../theme";
 import { i18n } from "../core/LanguageLoader";
 
 export const LoadingFragment = () => {
@@ -21,8 +21,8 @@ export const LoadingFragment = () => {
           source={require("../../../assets/images/GitHub_Logo.png")}
         />
       </View>
-      <Text size={"lg"} ignoreFontFamily>
-        {i18n.t("stargazers")}
+      <Text size={"xl"} ignoreFontFamily>
+        {`< ${i18n.t("stargazers")} />`}
       </Text>
     </View>
   );

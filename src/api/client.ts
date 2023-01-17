@@ -11,11 +11,21 @@ const githubApiVersion = "2022-11-28";
 
 let _gitHubClient: AxiosInstance;
 
-const clientSetGHToken = (token: string) => {
+export const clientSetGHToken = (token?: string) => {
   if (!_gitHubClient) return;
-  _gitHubClient.defaults.headers.common[
-    "Authorization"
-  ] = `Bearer ${Buffer.from(token, "base64").toString()}`;
+  let tokenToUse: string;
+  if (token) {
+    tokenToUse = token;
+  } else {
+    const { ghToken } = store.getState().userState;
+    if (!ghToken) return; // no token
+    tokenToUse = Buffer.from(ghToken, "base64").toString();
+  }
+  if (!_gitHubClient.defaults.headers.common["Authorization"]) {
+    _gitHubClient.defaults.headers.common[
+      "Authorization"
+    ] = `Bearer ${tokenToUse}`;
+  }
 };
 
 export const clientResetGHToken = () => {
@@ -41,18 +51,7 @@ export const getGitHubClient = () => {
         githubApiVersion;
 
     _gitHubClient.interceptors.request.use(async (request) => {
-      const { userState } = store.getState();
-      if (
-        !_gitHubClient.defaults.headers.common["Authorization"] &&
-        userState.ghToken
-      ) {
-        clientSetGHToken(userState.ghToken);
-        //@ts-ignore
-        request.headers["Authorization"] = `Bearer ${Buffer.from(
-          userState.ghToken,
-          "base64"
-        ).toString()}`;
-      }
+      if (__DEV__ && Platform.OS === "web") console.log(request);
       return request;
     });
 

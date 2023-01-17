@@ -1,7 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useEffect } from "react";
 import { ErrorBoundary } from "react-error-boundary";
-import { Platform, SafeAreaView, StyleSheet, View } from "react-native";
+import { Platform, StyleSheet, View } from "react-native";
 import { RootSiblingParent } from "react-native-root-siblings";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
@@ -18,7 +17,7 @@ import { AppNavigator } from "./src/navigation/AppNavigator";
 import { persistor, store } from "./src/reducers/store";
 import { DomainError } from "./src/types";
 
-export const APP_MAX_WIDTH_PX = 600;
+export const WEB_APP_MAX_WIDTH_PX = 600;
 
 // Prevents user from leaving the page.
 // In order for it to work, the user must have interacted
@@ -93,11 +92,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: "row",
-    backgroundColor: "#fff",
+    backgroundColor: "#EEEEEE",
     justifyContent: "center",
   },
   app: {
     flex: 1,
-    maxWidth: APP_MAX_WIDTH_PX,
+    maxWidth: Platform.OS === "web" ? WEB_APP_MAX_WIDTH_PX : undefined,
   },
 });

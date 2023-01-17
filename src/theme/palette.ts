@@ -12,6 +12,7 @@ export const Palette = {
   white90: "#FFFFFF90",
   grey: "#888888",
   grey50: "#88888850",
+  lightGrey: "#999999",
   black: "#000",
   transparent: "#fff0",
 };

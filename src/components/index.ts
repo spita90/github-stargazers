@@ -10,3 +10,4 @@ export { Screen } from "./Screen";
 export { Toggle } from "./Toggle";
 export { AnimatedTextInput } from "./AnimatedTextInput";
 export { RepoListItem } from "./RepoListItem";
+export { SlidingPagedList } from "./SlidingPagedList";

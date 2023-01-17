@@ -1,6 +1,7 @@
 import { useFonts } from "expo-font";
 import { useEffect, useRef, useState } from "react";
 import { Animated, Platform } from "react-native";
+import { clientSetGHToken, getGitHubClient } from "../../api/client";
 import { config } from "../../config";
 import { useTw } from "../../theme";
 import { LoadingFragment } from "../fragments/LoadingFragment";
@@ -15,6 +16,9 @@ export function AppLoader({ children }: { children: JSX.Element }) {
   });
 
   const initializeApp = async () => {
+    // init GH client
+    getGitHubClient();
+    clientSetGHToken();
     setTimeout(
       () => {
         setappInitialized(true);

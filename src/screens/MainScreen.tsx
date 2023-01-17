@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Animated, Dimensions, Easing, Platform, View } from "react-native";
-import { APP_MAX_WIDTH_PX } from "../../App";
+import { WEB_APP_MAX_WIDTH_PX } from "../../App";
 import {
   MainListFragment,
   MainSearchFragment,
@@ -19,8 +19,8 @@ export function MainScreen({
   const [toggleActiveIndex, setToggleActiveIndex] = useState(0);
 
   const screenWidth = Math.min(
-    APP_MAX_WIDTH_PX,
-    Dimensions.get("screen").width
+    WEB_APP_MAX_WIDTH_PX,
+    Dimensions.get("window").width
   );
 
   const searchSlideAnim = useRef(

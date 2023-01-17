@@ -1,8 +1,8 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
-import { Linking, ScrollView, View } from "react-native";
+import { ActivityIndicator, Linking, ScrollView, View } from "react-native";
 import { useSelector } from "react-redux";
-import { clientResetGHToken } from "../api/client";
+import { clientResetGHToken, clientSetGHToken } from "../api/client";
 import { testGHToken } from "../api/github";
 import { AnimatedTextInput, Button, Screen } from "../components";
 import { i18n } from "../components/core/LanguageLoader";
@@ -11,7 +11,10 @@ import { config } from "../config";
 import { HomeTabScreenProps } from "../navigation/screens";
 import { setLanguage } from "../reducers/languageReducer";
 import { userState } from "../reducers/store";
-import { setGHToken, wipeUser } from "../reducers/userReducer";
+import {
+  setGHToken as storeSetGHToken,
+  wipeUser,
+} from "../reducers/userReducer";
 import { useTw } from "../theme";
 import { showToast } from "../utils";
 
@@ -45,7 +48,8 @@ export function ProfileScreen({
     try {
       const result = await testGHToken(trimmedGHToken);
       if (!result) return showToast(i18n.t("tokenTestFailed"));
-      setGHToken(textInputGHToken);
+      storeSetGHToken(textInputGHToken);
+      clientSetGHToken(textInputGHToken);
       showToast(i18n.t("tokenTestSucceded"), "green");
     } catch (e) {
       showToast(i18n.t("cannotTestToken"));
@@ -120,7 +124,7 @@ export function ProfileScreen({
                 </View>
               </View>
               <AnimatedTextInput
-                style={tw`w-full h-[140px] mt-sm self-center`}
+                style={tw`w-full max-h-[140px] mt-sm mb-xs self-center`}
                 multiline
                 label={"GitHub Token"}
                 value={textInputGHToken}
@@ -130,12 +134,16 @@ export function ProfileScreen({
                 onPress={saveGHToken}
                 disabled={!saveGHTokenButtonEnabled}
               >
-                <Text color="white">{i18n.t("save")}</Text>
+                {saveGHTokenButtonEnabled ? (
+                  <Text color="white">{i18n.t("save")}</Text>
+                ) : (
+                  <ActivityIndicator size={20} color={"white"} />
+                )}
               </Button>
             </>
           )}
           <Button
-            style={tw`mt-xl`}
+            style={tw`mt-[50px]`}
             onPress={() => {
               const currentLanguageIndex = LANGUAGES.indexOf(i18n.locale);
               i18n.locale =
