@@ -215,7 +215,7 @@ export function RepoDetailScreen({
 
   return (
     <Screen>
-      <View style={tw`flex items-center`}>
+      <View style={tw`flex h-full items-center`}>
         <Header />
         {repo ? (
           <>
@@ -223,12 +223,6 @@ export function RepoDetailScreen({
               <AboveTheFold />
               <BelowTheFold />
             </ScrollView>
-            {/* <View
-                style={[
-                  { height: Dimensions.get("window").height },
-                  tw`absolute bottom-0 w-full bg-transparent`,
-                ]}
-              > */}
             <SlidingPagedList
               dataMatrix={pagedRepoStargazers}
               renderItem={renderListItem}
@@ -239,10 +233,10 @@ export function RepoDetailScreen({
               title={i18n.t("stargazers")}
               backgroundColor="white"
               // estimatedItemSize={} //TODO
-              height={Dimensions.get("window").height - 466}
+              height={Dimensions.get("window").height - 216}
+              bottomMargin={0}
               listRef={stargazersViewRef}
             />
-            {/* </View> */}
           </>
         ) : (
           <LoadingPlaceholder />

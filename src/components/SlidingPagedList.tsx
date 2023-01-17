@@ -17,6 +17,7 @@ export interface SlidingPagedListProps {
   backgroundColor?: ColorsType;
   estimatedItemSize?: number;
   height: number;
+  bottomMargin: number;
   listRef?: any;
 }
 
@@ -31,6 +32,7 @@ export const SlidingPagedList = ({
   backgroundColor,
   estimatedItemSize,
   height,
+  bottomMargin,
   listRef,
 }: SlidingPagedListProps) => {
   const [tw] = useTw();
@@ -80,7 +82,7 @@ export const SlidingPagedList = ({
 
   const ListHeader = () => (
     <View
-      style={tw`flex flex-row items-center justify-between pb-md border-b-[1px]`}
+      style={tw`flex flex-row items-center justify-between mb-md pb-sm border-b-[1px]`}
     >
       {title && (
         <Text textStyle={tw`text-xl`} bold>
@@ -96,29 +98,29 @@ export const SlidingPagedList = ({
   return (
     <Animated.View
       style={[
+        tw`absolute w-full`,
         { backgroundColor: backgroundColor },
-        tw`mt-md p-sm mx-lg 
-        border-t-3 border-l-3 border-r-3 border-grey 
-        rounded-t-lg`,
-        { height: height },
-        {
-          // position: "absolute",
-          // bottom: 0,
-          // maxHeight: Dimensions.get("window").height - 200,
-        }, // modal mode
+        { height: height, bottom: bottomMargin },
         { transform: [{ translateY: resultsViewSlideAnim }] },
       ]}
     >
-      <ListHeader />
-      <FlashList
-        ref={listRef}
-        data={dataMatrix[page]}
-        showsVerticalScrollIndicator={false}
-        renderItem={({ item }) => renderItem(item)}
-        keyExtractor={(itm) => itm.id.toString()}
-        estimatedItemSize={estimatedItemSize}
-      />
-      {(canGoBack || canGoNext) && <NavButtons />}
+      <View
+        style={tw`h-full mx-lg p-sm
+        border-t-3 border-l-3 border-r-3 border-grey 
+        rounded-t-lg`}
+      >
+        <ListHeader />
+        <FlashList
+          style={tw`w-full`}
+          ref={listRef}
+          data={dataMatrix[page]}
+          showsVerticalScrollIndicator={false}
+          renderItem={({ item }) => renderItem(item)}
+          keyExtractor={(itm) => itm.id.toString()}
+          estimatedItemSize={estimatedItemSize}
+        />
+        {(canGoBack || canGoNext) && <NavButtons />}
+      </View>
     </Animated.View>
   );
 };

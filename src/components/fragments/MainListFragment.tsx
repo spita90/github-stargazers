@@ -2,7 +2,7 @@ import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 import { CompositeNavigationProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { useEffect, useRef, useState } from "react";
-import { ActivityIndicator, Dimensions, Platform, View } from "react-native";
+import { ActivityIndicator, Dimensions, View } from "react-native";
 import { AnimatedTextInput, RepoListItem, SlidingPagedList } from "..";
 import {
   getUserRepos,
@@ -106,7 +106,7 @@ export function MainListFragment({ navigation }: MainListFragmentProps) {
   );
 
   return (
-    <View>
+    <View style={tw`h-full`}>
       <View style={[tw`flex flex-row justify-center items-center mt-sm`]}>
         <AnimatedTextInput
           style={tw`w-[70%]`}
@@ -124,6 +124,7 @@ export function MainListFragment({ navigation }: MainListFragmentProps) {
         </View>
       )}
       <SlidingPagedList
+        //TODO fix problem in web
         dataMatrix={pagedFoundRepos}
         renderItem={renderListItem}
         page={page}
@@ -133,6 +134,7 @@ export function MainListFragment({ navigation }: MainListFragmentProps) {
         title={i18n.t("repos")}
         estimatedItemSize={100}
         height={Dimensions.get("window").height - 286}
+        bottomMargin={NAV_BAR_HEIGHT_PX}
         listRef={resultsViewRef}
       />
     </View>
