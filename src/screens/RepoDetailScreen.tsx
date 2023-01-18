@@ -10,7 +10,7 @@ import {
   View,
 } from "react-native";
 import { getRepo, getRepoStargazers, rateLimitExcedeed } from "../api/github";
-import { Button, Screen, SlidingPagedList } from "../components";
+import { Button, Screen, SlidingPagedList, UserListItem } from "../components";
 import { i18n } from "../components/core/LanguageLoader";
 import { Text } from "../components/Text";
 import { RootStackScreenProps } from "../navigation/screens";
@@ -196,12 +196,7 @@ export function RepoDetailScreen({
     </View>
   );
 
-  const renderListItem = (user: GitHubUser) => (
-    <View style={tw`flex flex-row`}>
-      <Image source={{ uri: user.avatar_url }} style={tw`h-[30px] w-[30px]`} />
-      <Text>{user.login}</Text>
-    </View>
-  );
+  const renderListItem = (user: GitHubUser) => <UserListItem user={user} />;
 
   const LoadingPlaceholder = () => (
     <View
@@ -232,7 +227,7 @@ export function RepoDetailScreen({
               setVisible={setStargazersResultViewVisible}
               title={i18n.t("stargazers")}
               backgroundColor="white"
-              // estimatedItemSize={} //TODO
+              estimatedItemSize={61}
               height={Dimensions.get("window").height - 216}
               bottomMargin={0}
               listRef={stargazersViewRef}

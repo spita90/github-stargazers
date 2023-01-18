@@ -111,7 +111,6 @@ export const SlidingPagedList = ({
       >
         <ListHeader />
         <FlashList
-          style={tw`w-full`}
           ref={listRef}
           data={dataMatrix[page]}
           showsVerticalScrollIndicator={false}
