@@ -110,9 +110,9 @@ export function MainListFragment({ navigation }: MainListFragmentProps) {
 
   return (
     <View style={tw`h-full`}>
-      <View style={[tw`flex flex-row justify-center items-center mt-sm`]}>
+      <View style={[tw`flex flex-row justify-center items-center mt-lg`]}>
         <AnimatedTextInput
-          style={tw`w-[70%]`}
+          style={tw`w-[76%] max-w-[360px]`}
           textStyle={tw`text-2xl font-bold`}
           labelStyle={tw`text-lg`}
           label={i18n.t("userName")}
@@ -120,6 +120,7 @@ export function MainListFragment({ navigation }: MainListFragmentProps) {
           onChangeText={onUsernameInputValueChanged}
           onFocus={onUsernameInputFocus}
           onBlur={onUsernameInputBlur}
+          returnKeyType="search"
         />
       </View>
       {loading && (

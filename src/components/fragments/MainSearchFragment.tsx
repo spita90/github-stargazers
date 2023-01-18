@@ -6,7 +6,7 @@ import { ActivityIndicator, Platform, View } from "react-native";
 import { AnimatedTextInput, Text } from "..";
 import { useTw } from "../../theme";
 import { i18n } from "../core/LanguageLoader";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
   getRepo,
   isError404NotFound,
@@ -25,12 +25,13 @@ export interface MainSearchFragmentProps {
 export function MainSearchFragment({ navigation }: MainSearchFragmentProps) {
   const [tw] = useTw();
 
+  const repoTextInputRef = useRef(null);
   const [userName, setUserName] = useState<string>("");
   const [repoName, setRepoName] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
 
   const USERNAME_INPUT_WIDTH_PERC = Platform.OS === "web" ? 70 : 76;
-  const REPO_NAME_INPUT_WIDTH_PERC = Platform.OS === "web" ? 67 : 100;
+  // const REPO_NAME_INPUT_WIDTH_PERC = Platform.OS === "web" ? 100 : 100;
 
   const onUsernameInputValueChanged = (text: string) => {
     setUserName(text);
@@ -77,6 +78,12 @@ export function MainSearchFragment({ navigation }: MainSearchFragmentProps) {
           value={userName}
           onChangeText={onUsernameInputValueChanged}
           onBlur={onUsernameInputBlur}
+          returnKeyType="next"
+          blurOnSubmit={false}
+          onSubmitEditing={() => {
+            //@ts-ignore
+            repoTextInputRef.current.focus();
+          }}
         />
         <View style={tw`ml-xs`}>
           <Text textStyle={tw`pt-[10px] text-8xl`}>/</Text>
@@ -84,13 +91,15 @@ export function MainSearchFragment({ navigation }: MainSearchFragmentProps) {
       </View>
       <View style={tw`w-full items-center px-xl`}>
         <AnimatedTextInput
-          style={tw`w-[${REPO_NAME_INPUT_WIDTH_PERC}%] mt-xs`}
+          textInputRef={repoTextInputRef}
+          style={tw`w-[100%] max-w-[360px] mt-xs`}
           textStyle={tw`text-xl`}
           labelStyle={tw`text-lg`}
           label={i18n.t("repoName")}
           value={repoName}
           onChangeText={onRepoNameInputValueChanged}
           onBlur={onRepoNameInputBlur}
+          returnKeyType="search"
         />
       </View>
       {loading && (
@@ -98,9 +107,6 @@ export function MainSearchFragment({ navigation }: MainSearchFragmentProps) {
           <ActivityIndicator size={40} color="black" />
         </View>
       )}
-      {/* <View style={tw`flex mt-[30%] items-center justify-center`}>
-        <OctocatSvg width={200} height={200} />
-      </View> */}
     </View>
   );
 }
