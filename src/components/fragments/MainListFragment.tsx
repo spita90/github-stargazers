@@ -28,21 +28,23 @@ export function MainListFragment({ navigation }: MainListFragmentProps) {
 
   const RESULTS_PER_PAGE = 20;
 
-  const resultsViewRef = useRef(null);
+  const resultsSliderRef = useRef(null);
+  const resultSliderSnapPoints = ["16%", "100%"];
   const [userName, setUserName] = useState<string>("");
+  const [resultsSliderVisible, setResultsSliderVisible] =
+    useState<boolean>(false);
   const [pagedFoundRepos, setPagedFoundRepos] = useState<GitHubRepo[][]>([]);
   const [page, setPage] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
-  const [resultViewVisible, setResultViewVisible] = useState<boolean>(false);
 
   const onUsernameInputFocus = () => {
-    if (resultViewVisible) setResultViewVisible(false);
+    // if (resultViewVisible) setResultViewVisible(false); //TODO
   };
 
   const onUsernameInputBlur = () => {
     if (
-      userName.trim().length === 0 ||
-      (resultViewVisible && pagedFoundRepos.length > 0)
+      userName.trim().length === 0
+      // ||(resultViewVisible && pagedFoundRepos.length > 0)//TODO
     )
       return;
     setPage(0);
@@ -57,18 +59,19 @@ export function MainListFragment({ navigation }: MainListFragmentProps) {
     setUserName(text);
     setPagedFoundRepos([]);
     setPage(0);
-    setResultViewVisible(false);
+    setResultsSliderVisible(false);
   };
 
   useEffect(() => {
     //@ts-ignore
-    resultsViewRef.current?.rlvRef.scrollToOffset(0, 0, false, false);
-    if (!pagedFoundRepos[page + 1]) {
+    // resultsViewRef.current?.rlvRef.scrollToOffset(0, 0, false, false);
+    if (pagedFoundRepos.length > 0 && !pagedFoundRepos[page + 1]) {
       fetchRepos([page + 1]);
     }
   }, [page]);
 
   const fetchRepos = async (pages: number[], showResults: boolean = false) => {
+    console.log(pages, showResults);
     const trimmedUserName = userName.trim();
     if (trimmedUserName.length === 0) return;
     try {
@@ -84,7 +87,7 @@ export function MainListFragment({ navigation }: MainListFragmentProps) {
       });
       setPagedFoundRepos(pagesFound);
       if (showResults) {
-        setResultViewVisible(true);
+        setResultsSliderVisible(true);
       }
     } catch (e) {
       if (rateLimitExcedeed(e)) return showToast(i18n.t("rateLimitExcedeed"));
@@ -109,7 +112,11 @@ export function MainListFragment({ navigation }: MainListFragmentProps) {
   );
 
   return (
-    <View style={tw`h-full`}>
+    <View
+      style={{
+        height: Dimensions.get("window").height - 304,
+      }}
+    >
       <View style={[tw`flex flex-row justify-center items-center mt-lg`]}>
         <AnimatedTextInput
           style={tw`w-[76%] max-w-[360px]`}
@@ -124,26 +131,26 @@ export function MainListFragment({ navigation }: MainListFragmentProps) {
         />
       </View>
       {loading && (
-        <View style={tw`h-[80%] flex justify-center`}>
+        <View style={tw`h-[50%] flex justify-center`}>
           <ActivityIndicator size={40} color="black" />
         </View>
       )}
       <SlidingPagedList
         //TODO fix hidden height problem in web
+        visible={resultsSliderVisible}
+        setVisible={(visible) => setResultsSliderVisible(visible)}
         dataMatrix={pagedFoundRepos}
         renderItem={renderListItem}
         page={page}
         setPage={setPage}
-        visible={resultViewVisible}
-        setVisible={setResultViewVisible}
         title={i18n.t("repos")}
         backgroundColor="white"
-        estimatedItemSize={100}
-        height={Dimensions.get("window").height - 286}
-        bottomMargin={NAV_BAR_HEIGHT_PX}
-        listRef={resultsViewRef}
+        snapPoints={resultSliderSnapPoints}
+        initialSnapIndex={1}
+        bottomMargin={132}
+        sliderRef={resultsSliderRef}
+        height={500}
       />
     </View>
-    // TODO insert nice svg bg
   );
 }

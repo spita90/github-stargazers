@@ -88,7 +88,7 @@ export function MainScreen({
 
   return (
     <Screen>
-      <View style={tw`flex items-center py-xl`}>
+      <View style={tw`flex items-center pt-xl h-full`}>
         <Toggle
           activeIndex={toggleActiveIndex}
           setActiveIndex={setToggleActiveIndex}

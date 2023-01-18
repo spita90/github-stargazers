@@ -33,9 +33,10 @@ export function RepoDetailScreen({
     GitHubUser[][]
   >([]);
   const [page, setPage] = useState<number>(0);
-  const [stargazersViewVisible, setStargazersResultViewVisible] =
+
+  const stargazersSliderRef = useRef(null);
+  const [stargazersSliderVisible, setStargazersSliderVisible] =
     useState<boolean>(false);
-  const stargazersViewRef = useRef(null);
 
   const boldCondition = Platform.OS !== "web";
   const languageShowCondition = repo.language !== null;
@@ -57,16 +58,13 @@ export function RepoDetailScreen({
 
   useEffect(() => {
     //@ts-ignore
-    stargazersViewRef.current?.rlvRef.scrollToOffset(0, 0, false, false);
-    if (!pagedRepoStargazers[page + 1]) {
+    // stargazersViewRef.current?.rlvRef.scrollToOffset(0, 0, false, false);
+    if (pagedRepoStargazers.length > 0 && !pagedRepoStargazers[page + 1]) {
       fetchStargazers([page + 1]);
     }
   }, [page]);
 
-  const fetchStargazers = async (
-    pages: number[],
-    showResults: boolean = false
-  ) => {
+  const fetchStargazers = async (pages: number[]) => {
     try {
       const resultStargazers = await Promise.all(
         pages.map(
@@ -84,9 +82,6 @@ export function RepoDetailScreen({
         stargazersFound[pages[index]] = resultPage;
       });
       setPagedRepoStargazers(stargazersFound);
-      if (showResults) {
-        setStargazersResultViewVisible(true);
-      }
     } catch (e) {
       if (rateLimitExcedeed(e)) return showToast(i18n.t("rateLimitExcedeed"));
       setPagedRepoStargazers([]);
@@ -175,7 +170,7 @@ export function RepoDetailScreen({
         {stargazersShowCondition && (
           <Button
             style={tw`mt-lg`}
-            onPress={() => setStargazersResultViewVisible(true)}
+            onPress={() => setStargazersSliderVisible(true)}
           >
             <Text color="white">{i18n.t("showStargazers")}</Text>
           </Button>
@@ -194,8 +189,6 @@ export function RepoDetailScreen({
     </View>
   );
 
-  //TODO star/unstar
-
   return (
     <Screen>
       <View style={tw`flex h-full items-center`}>
@@ -207,18 +200,19 @@ export function RepoDetailScreen({
               <BelowTheFold />
             </ScrollView>
             <SlidingPagedList
+              visible={stargazersSliderVisible}
+              setVisible={(visible) => setStargazersSliderVisible(visible)}
               dataMatrix={pagedRepoStargazers}
               renderItem={renderListItem}
               page={page}
               setPage={setPage}
-              visible={stargazersViewVisible}
-              setVisible={setStargazersResultViewVisible}
               title={i18n.t("stargazers")}
               backgroundColor="white"
-              estimatedItemSize={61}
-              height={Dimensions.get("window").height - 216}
+              snapPoints={["30%", "100%"]}
+              initialSnapIndex={1}
               bottomMargin={0}
-              listRef={stargazersViewRef}
+              sliderRef={stargazersSliderRef}
+              height={600}
             />
           </>
         ) : (

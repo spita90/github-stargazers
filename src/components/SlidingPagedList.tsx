@@ -1,6 +1,6 @@
-import { FlashList } from "@shopify/flash-list";
 import { useEffect, useRef } from "react";
 import { Animated, Dimensions, Easing, Platform, View } from "react-native";
+import { FlatList } from "react-native-gesture-handler";
 import { Button, Text } from ".";
 import { useTw } from "../theme";
 import { ColorsType } from "../theme/palette";
@@ -11,31 +11,36 @@ export interface SlidingPagedListProps {
   renderItem: (item: any) => JSX.Element;
   page: number;
   setPage: (page: number) => void;
-  visible: boolean;
-  setVisible: (visible: boolean) => void;
   title?: string;
   backgroundColor?: ColorsType;
-  estimatedItemSize?: number;
+  snapPoints: (string | number)[]; //starting from the top
+  initialSnapIndex: number;
   height: number;
   bottomMargin: number;
-  listRef?: any;
+  visible: boolean;
+  setVisible: (visible: boolean) => void;
+  sliderRef?: any;
 }
 
 export const SlidingPagedList = ({
+  sliderRef,
   dataMatrix,
   renderItem,
   page,
   setPage,
-  visible,
-  setVisible,
   title,
   backgroundColor,
-  estimatedItemSize,
+  snapPoints,
+  initialSnapIndex,
   height,
   bottomMargin,
-  listRef,
+  visible,
+  setVisible,
 }: SlidingPagedListProps) => {
   const [tw] = useTw();
+
+  const canGoBack = page > 0;
+  const canGoNext = dataMatrix[page + 1] && dataMatrix[page + 1].length > 0;
 
   const RESULTS_VIEW_HIDDEN_Y_POS_PX = Dimensions.get("window").height;
 
@@ -51,9 +56,6 @@ export const SlidingPagedList = ({
       useNativeDriver: Platform.OS !== "web",
     }).start();
   }, [visible]);
-
-  const canGoBack = page > 0;
-  const canGoNext = dataMatrix[page + 1] && dataMatrix[page + 1].length > 0;
 
   const NavButtons = () => (
     <View style={tw`flex flex-row h-[54px] mt-sm justify-evenly`}>
@@ -82,7 +84,11 @@ export const SlidingPagedList = ({
 
   const ListHeader = () => (
     <View
-      style={tw`flex flex-row items-center justify-between mb-md pb-sm border-b-[1px]`}
+      style={[
+        tw`flex flex-row items-center justify-between
+      pb-md`,
+        { backgroundColor: backgroundColor },
+      ]}
     >
       {title && (
         <Text textStyle={tw`text-xl`} bold>
@@ -95,30 +101,37 @@ export const SlidingPagedList = ({
     </View>
   );
 
+  useEffect(() => {
+    // sliderRef.current.snapTo(visible ? 0 : snapPoints.length - 1);
+  }, [visible]);
+
   return (
     <Animated.View
       style={[
         tw`absolute w-full`,
-        { height: height, bottom: bottomMargin },
+        { bottom: -bottomMargin },
+        // { height: height, bottom: 0 },
         { transform: [{ translateY: resultsViewSlideAnim }] },
       ]}
     >
       <View
         style={[
           { backgroundColor: backgroundColor },
-          tw`h-full mx-lg p-sm
+          { maxHeight: height },
+          { width: Dimensions.get("window").width - 40, marginLeft: 20 },
+          tw`p-sm
         border-t-3 border-l-3 border-r-3 border-grey 
         rounded-t-lg`,
         ]}
       >
         <ListHeader />
-        <FlashList
-          ref={listRef}
+        <FlatList
+          // ref={listRef}
           data={dataMatrix[page]}
           showsVerticalScrollIndicator={false}
           renderItem={({ item }) => renderItem(item)}
           keyExtractor={(itm) => itm.id.toString()}
-          estimatedItemSize={estimatedItemSize}
+          // estimatedItemSize={estimatedItemSize}
         />
         {(canGoBack || canGoNext) && <NavButtons />}
       </View>

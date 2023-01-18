@@ -1,4 +1,4 @@
-import { View, Image } from "react-native";
+import { Image, View } from "react-native";
 import { Text } from ".";
 import { useTw } from "../theme";
 import { GitHubUser } from "../types";

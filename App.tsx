@@ -1,6 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ErrorBoundary } from "react-error-boundary";
 import { Platform, StyleSheet, View } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { RootSiblingParent } from "react-native-root-siblings";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
@@ -61,7 +62,7 @@ export default function App() {
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <View style={styles.container}>
+        <GestureHandlerRootView style={styles.container}>
           <View style={styles.app}>
             <RootSiblingParent>
               <LanguageLoader />
@@ -82,7 +83,7 @@ export default function App() {
               </ErrorBoundary>
             </RootSiblingParent>
           </View>
-        </View>
+        </GestureHandlerRootView>
       </PersistGate>
     </Provider>
   );

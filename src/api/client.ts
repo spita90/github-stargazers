@@ -51,13 +51,17 @@ export const getGitHubClient = () => {
         githubApiVersion;
 
     _gitHubClient.interceptors.request.use(async (request) => {
-      if (__DEV__ && Platform.OS === "web") console.log(request);
+      if (__DEV__ && Platform.OS === "web") {
+        // console.log(request);
+      }
       return request;
     });
 
     _gitHubClient.interceptors.response.use(
       async (response) => {
-        if (__DEV__ && Platform.OS === "web") console.log(response);
+        if (__DEV__ && Platform.OS === "web") {
+          // console.log(response);
+        }
         return response;
       },
       async (error) => {
