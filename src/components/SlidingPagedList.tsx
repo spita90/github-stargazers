@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { Animated, Dimensions, Easing, Platform, View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import { Button, Text } from ".";
+import { WEB_APP_MAX_WIDTH_PX } from "../../App";
 import { useTw } from "../theme";
 import { ColorsType } from "../theme/palette";
 import { i18n } from "./core/LanguageLoader";
@@ -109,7 +110,12 @@ export const SlidingPagedList = ({
         style={[
           { backgroundColor: backgroundColor },
           { maxHeight: maxHeight },
-          { width: Dimensions.get("window").width - 40, marginLeft: 20 },
+          {
+            width:
+              Math.min(WEB_APP_MAX_WIDTH_PX, Dimensions.get("window").width) -
+              40,
+            marginLeft: 20,
+          },
           tw`p-sm
         border-t-3 border-l-3 border-r-3 border-grey 
         rounded-t-lg`,
