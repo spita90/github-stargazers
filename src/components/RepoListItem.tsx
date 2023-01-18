@@ -10,8 +10,14 @@ export interface RepoListItemProps {
   onPress?: () => void;
 }
 
+/**
+ * A simple component that shows a GitHub repo
+ * as a list row
+ * @param repo the GitHub repo to be shown
+ * @param onPress function executed on press
+ */
 export function RepoListItem({ repo, onPress }: RepoListItemProps) {
-  const [tw] = useTw();
+  const tw = useTw();
 
   return (
     <TouchableOpacity

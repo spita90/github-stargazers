@@ -15,10 +15,10 @@ export interface ErrorPageProps {
 }
 
 /**
- * To be used for blocking errors
+ * An error page that displays in case of blocking errors
  */
-export function ErrorFragment({ error, resetErrorBoundary }: ErrorPageProps) {
-  const [tw] = useTw();
+export function ErrorFragment({ error }: ErrorPageProps) {
+  const tw = useTw();
 
   useEffect(() => {
     if (

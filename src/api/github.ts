@@ -2,6 +2,30 @@ import axios, { AxiosError } from "axios";
 import { DomainError, GitHubUser, GitHubRepo } from "../types";
 import { getGitHubClient, noResponse } from "./client";
 
+/**
+ * Returns the repo of specified name and user
+ * @param userName the repo owner
+ * @param repoName the repo name
+ */
+export const getRepo = async (
+  userName: string,
+  repoName: string
+): Promise<GitHubRepo> =>
+  getGitHubClient()
+    .get<GitHubRepo>(`repos/${userName}/${repoName}`)
+    .then((response) => {
+      if (noResponse(response)) {
+        throw new DomainError("cannotGetRepoData");
+      }
+      return response.data;
+    });
+
+/**
+ * Returns the repos belonging to a GitHub user
+ * @param userName the GitHub user
+ * @param resultsPerPage how many items per page
+ * @param page results page
+ */
 export const getUserRepos = async (
   userName: string,
   resultsPerPage: number,
@@ -18,39 +42,13 @@ export const getUserRepos = async (
       return response.data;
     });
 
-export const testGHToken = async (token: string): Promise<boolean> =>
-  getGitHubClient()
-    .get<GitHubRepo[]>(`users/github/repos`, {
-      params: { per_page: 1 },
-      headers: { Authorization: `Bearer ${token}` },
-    })
-    .then((response) => {
-      if (noResponse(response)) {
-        throw new DomainError("cannotTestToken");
-      }
-      return (
-        !!response.headers["x-ratelimit-limit"] &&
-        Number(response.headers["x-ratelimit-limit"]) > 60
-      );
-    })
-    .catch((e) => {
-      if (isError401BadCredentials(e)) return false;
-      throw e;
-    });
-
-export const getRepo = async (
-  userName: string,
-  repoName: string
-): Promise<GitHubRepo> =>
-  getGitHubClient()
-    .get<GitHubRepo>(`repos/${userName}/${repoName}`)
-    .then((response) => {
-      if (noResponse(response)) {
-        throw new DomainError("cannotGetRepoData");
-      }
-      return response.data;
-    });
-
+/**
+ * Returns the GitHub users that starred the specified repo
+ * @param userName the repo owner
+ * @param repoName the repo name
+ * @param resultsPerPage how many items per page
+ * @param page results page
+ */
 export const getRepoStargazers = async (
   userName: string,
   repoName: string,
@@ -66,6 +64,29 @@ export const getRepoStargazers = async (
         throw new DomainError("cannotGetRepoStargazers");
       }
       return response.data;
+    });
+
+/**
+ * Tests the specified GitHub token
+ * @param token
+ */
+export const testGHToken = async (token: string): Promise<boolean> =>
+  getGitHubClient()
+    .get<GitHubRepo[]>(`user`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    .then((response) => {
+      if (noResponse(response)) {
+        throw new DomainError("cannotTestToken");
+      }
+      return (
+        !!response.headers["x-ratelimit-limit"] &&
+        Number(response.headers["x-ratelimit-limit"]) > 60
+      );
+    })
+    .catch((e) => {
+      if (isError401BadCredentials(e)) return false;
+      throw e;
     });
 
 export const isError404NotFound = (e: any) => {

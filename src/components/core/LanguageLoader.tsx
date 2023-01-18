@@ -6,8 +6,11 @@ import { languageState } from "../../reducers/store";
 
 export const i18n = new I18n({ it: TRANSLATIONS_IT, en: TRANSLATIONS_EN });
 
+/**
+ * Manages initialization of translation system
+ */
 export function initI18n() {
-  i18n.locale = useSelector(languageState).language;
+  i18n.locale = useSelector(languageState).code;
   i18n.enableFallback = true;
   i18n.defaultLocale = "en";
 }

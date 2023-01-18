@@ -2,12 +2,12 @@ import { createSlice } from "@reduxjs/toolkit";
 import * as Localization from "expo-localization";
 import { store } from "./store";
 
-export interface LanguageData {
-  language: string;
+export interface Language {
+  code: string;
 }
 
-const languageState: LanguageData = {
-  language: Localization.locale.substring(0, 2),
+const languageState: Language = {
+  code: Localization.locale.substring(0, 2),
 };
 
 const languageSlice = createSlice({
@@ -15,7 +15,7 @@ const languageSlice = createSlice({
   initialState: languageState,
   reducers: {
     _setLanguage(state, action: { payload: string }) {
-      state.language = action.payload;
+      state.code = action.payload;
     },
   },
 });

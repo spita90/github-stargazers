@@ -22,12 +22,14 @@ export interface MainListFragmentProps {
   >;
 }
 
+/**
+ * The list fragment of the main screen
+ */
 export function MainListFragment({ navigation }: MainListFragmentProps) {
-  const [tw] = useTw();
+  const tw = useTw();
 
   const RESULTS_PER_PAGE = 20;
 
-  const resultsListRef = useRef(null);
   const [userName, setUserName] = useState<string>("");
   const [resultsSliderVisible, setResultsSliderVisible] =
     useState<boolean>(false);
@@ -35,10 +37,19 @@ export function MainListFragment({ navigation }: MainListFragmentProps) {
   const [page, setPage] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
 
+  const resultsListRef = useRef(null);
+
   const onUsernameInputFocus = () => {
     if (resultsSliderVisible) setResultsSliderVisible(false);
   };
 
+  /**
+   * When user leaves the username text input
+   * the search start. We start fetching first 2 pages
+   * in parallel so that the user will not have to wait
+   * before going to the second page.
+   * (GitHub pages are 1-indexed)
+   */
   const onUsernameInputBlur = () => {
     if (
       userName.trim().length === 0 ||
@@ -47,12 +58,12 @@ export function MainListFragment({ navigation }: MainListFragmentProps) {
       return;
     setPage(0);
     setLoading(true);
-    // First username fetch.
-    // Get first and second pages in parallel
-    // (GitHub pages are 1-indexed)
     fetchRepos([0, 1], true);
   };
 
+  /**
+   * Resets the search when user changes username text input
+   */
   const onUsernameInputValueChanged = (text: string) => {
     setUserName(text);
     setPagedFoundRepos([]);
@@ -60,6 +71,10 @@ export function MainListFragment({ navigation }: MainListFragmentProps) {
     setResultsSliderVisible(false);
   };
 
+  /**
+   * Handles next/prev navigation of
+   * repo results list
+   */
   useEffect(() => {
     //@ts-ignore
     resultsListRef.current?.scrollToOffset({ animated: true, offset: 0 });

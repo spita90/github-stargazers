@@ -1,9 +1,9 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ErrorBoundary } from "react-error-boundary";
-import { Platform, StyleSheet, View } from "react-native";
+import { Dimensions, Platform, StyleSheet, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { RootSiblingParent } from "react-native-root-siblings";
-import { Provider } from "react-redux";
+import { Provider, useSelector } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import {
   Browser as SentryBrowser,
@@ -15,15 +15,22 @@ import { AppLoader } from "./src/components/core/AppLoader";
 import { ErrorFragment } from "./src/components/fragments/ErrorFragment";
 import { config } from "./src/config";
 import { AppNavigator } from "./src/navigation/AppNavigator";
-import { persistor, store } from "./src/reducers/store";
+import { languageState, persistor, store } from "./src/reducers/store";
+import { useTw } from "./src/theme";
 import { DomainError } from "./src/types";
 
 export const WEB_APP_MAX_WIDTH_PX = 600;
+export const SCREEN_AVAILABLE_WIDTH = Math.min(
+  WEB_APP_MAX_WIDTH_PX,
+  Dimensions.get("window").width
+);
 
-// Prevents user from leaving the page.
-// In order for it to work, the user must have interacted
-// a minimum on the page (transient user activation).
-// Unfortunately modern browsers removed support for custom alert messages.
+/**
+ * Prevents user from leaving the page.
+ * In order for it to work, the user must interact
+ * at least a minimum on the page (transient user activation).
+ * Unfortunately modern browsers removed support for custom alert messages.
+ */
 if (Platform.OS === "web") {
   window.addEventListener("beforeunload", function (e) {
     if (!__DEV__) {
@@ -33,6 +40,11 @@ if (Platform.OS === "web") {
   });
 }
 
+/**
+ * Initializes Sentry bug-tracking capabilities
+ * The DSN url is safe to keep public: see
+ * https://docs.sentry.io/product/sentry-basics/dsn-explainer/
+ */
 SentryInit({
   dsn: "https://0290e10b60bc4d02959a039c66014912@o4504496397156352.ingest.sentry.io/4504496400957440",
   release: `github-stargazers:v${config.version}`,
@@ -41,6 +53,9 @@ SentryInit({
   tracesSampleRate: 1,
 });
 
+/**
+ * App-level Error boundary
+ */
 const onError = async (error: Error) => {
   switch (Platform.OS) {
     case "web":
@@ -59,11 +74,23 @@ const onError = async (error: Error) => {
 };
 
 export default function App() {
+  const tw = useTw();
+
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <GestureHandlerRootView style={styles.container}>
-          <View style={styles.app}>
+        <GestureHandlerRootView
+          style={tw`flex-1 flex-row bg-[#EEEEEE] justify-center`}
+        >
+          <View
+            style={[
+              tw`flex-1`,
+              {
+                maxWidth:
+                  Platform.OS === "web" ? WEB_APP_MAX_WIDTH_PX : undefined,
+              },
+            ]}
+          >
             <RootSiblingParent>
               <LanguageLoader />
               <ErrorBoundary
@@ -88,16 +115,3 @@ export default function App() {
     </Provider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: "row",
-    backgroundColor: "#EEEEEE",
-    justifyContent: "center",
-  },
-  app: {
-    flex: 1,
-    maxWidth: Platform.OS === "web" ? WEB_APP_MAX_WIDTH_PX : undefined,
-  },
-});

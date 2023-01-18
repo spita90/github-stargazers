@@ -11,6 +11,9 @@ const githubApiVersion = "2022-11-28";
 
 let _gitHubClient: AxiosInstance;
 
+/**
+ * Sets the GitHub token to be used in requests
+ */
 export const clientSetGHToken = (token?: string) => {
   if (!_gitHubClient) return;
   let tokenToUse: string;
@@ -28,12 +31,18 @@ export const clientSetGHToken = (token?: string) => {
   }
 };
 
+/**
+ * Removes the GitHub token from the client
+ */
 export const clientResetGHToken = () => {
   if (!_gitHubClient) return;
   _gitHubClient.defaults.headers.common["Authorization"] = undefined;
   delete _gitHubClient.defaults.headers.common["Authorization"];
 };
 
+/**
+ * The Axios GitHub client
+ */
 export const getGitHubClient = () => {
   if (!_gitHubClient) {
     _gitHubClient = axios.create({
@@ -42,10 +51,12 @@ export const getGitHubClient = () => {
 
     _gitHubClient.defaults.headers.common["Accept"] = githubAcceptHeader;
 
-    // When in browser, if this header is specified, the request will be
-    // CORS-blocked. No problem in native mode.
-    // It is a known issue in GitHub API. See
-    // https://github.com/orgs/community/discussions/40619
+    /**
+     * When in browser, if this header is specified, the request will be
+     * CORS-blocked. No problem in Native mode.
+     * It is a known issue in GitHub API. See
+     * https://github.com/orgs/community/discussions/40619
+     * */
     if (Platform.OS !== "web")
       _gitHubClient.defaults.headers.common["X-GitHub-Api-Version"] =
         githubApiVersion;
@@ -69,6 +80,7 @@ export const getGitHubClient = () => {
       }
     );
 
+    // Manages requests retry, useful when connection condition is poor
     axiosRetry(_gitHubClient, {
       retries: 3,
       retryDelay: axiosRetry.exponentialDelay,

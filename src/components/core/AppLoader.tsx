@@ -6,19 +6,31 @@ import { config } from "../../config";
 import { useTw } from "../../theme";
 import { LoadingFragment } from "../fragments/LoadingFragment";
 
+/**
+ * Manages App initialization before displaying it
+ */
 export function AppLoader({ children }: { children: JSX.Element }) {
+  const tw = useTw();
+
   const [appInitialized, setappInitialized] = useState(false);
   const [canRenderChildren, setCanRenderChildren] = useState(false);
-  const [tw] = useTw();
 
+  const fadeOutAnim = useRef(new Animated.Value(1)).current;
+
+  /**
+   * Loads the font to be used across the whole App
+   */
   const [fontsLoaded] = useFonts({
     "Circular-Std-Medium": require("../../../assets/fonts/CircularStd-Medium.ttf"),
   });
 
   const initializeApp = async () => {
-    // init GH client
+    // Initializes GitHub client
     getGitHubClient();
+
+    // If available, sets GitHub token to the client
     clientSetGHToken();
+
     setTimeout(
       () => {
         setappInitialized(true);
@@ -28,7 +40,7 @@ export function AppLoader({ children }: { children: JSX.Element }) {
   };
 
   useEffect(() => {
-    //Entry point
+    //App entry point
     if (config.environment !== "prod") {
       console.log(config.environment);
       console.log(config.version);
@@ -37,16 +49,16 @@ export function AppLoader({ children }: { children: JSX.Element }) {
     initializeApp();
   }, []);
 
-  const fadeOutAnim = useRef(new Animated.Value(1)).current;
-
+  /**
+   * Handles the fade-out animation when loading is finished
+   */
   useEffect(() => {
     if (!appInitialized || !fontsLoaded) return;
     Animated.timing(fadeOutAnim, {
       toValue: 0,
       duration: 400,
       useNativeDriver: Platform.OS !== "web",
-    }).start(({ finished }) => {
-      if (!finished) return;
+    }).start(() => {
       setCanRenderChildren(true);
     });
   }, [appInitialized, fontsLoaded]);

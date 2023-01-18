@@ -26,6 +26,23 @@ export interface Props {
   ignoreFontFamily?: boolean;
 }
 
+/**
+ * A practical and highly configurable text component
+ * that replaces the default one
+ * @param children the content of the text field (can also be another Text)
+  @param size the font size
+  @param bold thickens the font
+  @param color the font color
+  @param center centers the text
+  @param onPress a function executen on text press
+  @param style the style of the text container
+  @param textStyle the style of the text itself
+  @param numberOfLines if the text rows exceed this number, 3 dots will be shown
+  @param mtop the top margin
+  @param padding the text padding from the container
+  @param allowFontScaling enables font scaling
+  @param ignoreFontFamily uses the default system font
+ */
 export function Text({
   children,
   size,
@@ -42,7 +59,7 @@ export function Text({
   ignoreFontFamily,
 }: Props) {
   let bg = "transparent";
-  const [tw] = useTw();
+  const tw = useTw();
 
   const getSize = () => {
     if (!size) return fontSizes.md;
@@ -63,13 +80,10 @@ export function Text({
     marginTop =
       typeof mtop === "boolean" ? Sizes.spacing.md : Sizes.spacing[mtop];
 
-  const wrapperStyle: StyleProp<ViewStyle> = {
-    marginTop,
-    backgroundColor: bg,
-    padding: padding,
-    margin: 0,
-    marginBottom: 0,
-  };
+  const wrapperStyle: StyleProp<ViewStyle> = [
+    tw`m-0`,
+    { backgroundColor: bg, padding: padding, marginTop },
+  ];
 
   const TextComponent = () => (
     <RNText

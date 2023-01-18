@@ -4,8 +4,12 @@ import { Text } from "..";
 import { useTw } from "../../theme";
 import { i18n } from "../core/LanguageLoader";
 
+/**
+ * Shows a cool animation with the app logo.
+ * Uses Lottie for the animation
+ */
 export const LoadingFragment = () => {
-  const [tw] = useTw();
+  const tw = useTw();
 
   return (
     <View style={tw`h-full justify-center items-center`}>

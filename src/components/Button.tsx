@@ -17,6 +17,16 @@ export interface ButtonProps extends ViewProps {
   color?: ColorsType;
 }
 
+/**
+ * An highly customizable Button component that replaces
+ * the default one
+ * @param onPress function that executes on button press
+ * @param onLongPress function that executes on button long press
+ * @param disabled disables the button
+ * @param style the button style
+ * @param children the button content
+ * @param color the button color
+ */
 export const Button: React.FC<ButtonProps> = ({
   onPress,
   onLongPress,
@@ -25,7 +35,8 @@ export const Button: React.FC<ButtonProps> = ({
   children,
   color,
 }: ButtonProps) => {
-  const [tw] = useTw();
+  const tw = useTw();
+
   return (
     <TouchableOpacity
       activeOpacity={disabled ? 1 : 0.6}

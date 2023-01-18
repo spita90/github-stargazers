@@ -2,7 +2,7 @@ import { create, TailwindFn, TwConfig } from "twrnc";
 import { Palette } from "./palette";
 import tailwindConfig from "./tailwind.config";
 
-const newConfig = (): TailwindFn => {
+const defaultConfig = (): TailwindFn => {
   const cfg: TwConfig = {
     theme: { ...tailwindConfig.theme, colors: { ...Palette } },
     plugins: [...tailwindConfig.plugins],
@@ -11,9 +11,12 @@ const newConfig = (): TailwindFn => {
 };
 
 const tw_theme = {
-  default: newConfig(),
+  default: defaultConfig(),
 };
 
-export function useTw(): [TailwindFn] {
-  return [tw_theme.default];
+/**
+ * Tailwind hook
+ */
+export function useTw(): TailwindFn {
+  return tw_theme.default;
 }

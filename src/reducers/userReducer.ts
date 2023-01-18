@@ -9,6 +9,10 @@ const userSlice = createSlice({
   name: "user",
   initialState: initialUserState,
   reducers: {
+    /**
+     * Token is not stored in plain text
+     * but is base64 encoded
+     * */
     _setGHToken(state, action: PayloadAction<string>) {
       state.ghToken = Buffer.from(action.payload).toString("base64");
     },

@@ -1,7 +1,7 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { Animated, Platform, View } from "react-native";
 import { useSelector } from "react-redux";
 import { i18n } from "../components/core/LanguageLoader";
@@ -14,49 +14,80 @@ import { HomeTabParamList, RootStackParamList } from "./screens";
 
 export const NAV_BAR_HEIGHT_PX = 80;
 
-const Stack = createStackNavigator<RootStackParamList>();
-const Tab = createBottomTabNavigator<HomeTabParamList>();
-
-const ProfileBadge = () => {
-  const { ghToken } = useSelector(userState);
-  const profileBadgeShowConditions = [!ghToken];
-
-  const [tw] = useTw();
-  return profileBadgeShowConditions.some((cond) => cond) ? (
-    <View
-      style={tw`absolute p-[2px] w-[20px] h-[20px] items-center justify-center -top-[8px] -right-2 rounded-lg bg-red`}
-    />
-  ) : null;
-};
-
+/**
+ * The root level navigator
+ */
 export const AppNavigator = () => {
-  const language = useSelector(languageState).language;
-  const [tw] = useTw();
+  const tw = useTw();
 
-  const TabNavigator = () => {
-    return (
+  /**
+   * Triggers app re-render on language change
+   */
+  const { code: languageCode } = useSelector(languageState);
+
+  /**
+   * Handles the root level screens
+   */
+  const Stack = createStackNavigator<RootStackParamList>();
+
+  /**
+   * Handles the screens in the bottom navigation bar
+   */
+  const Tab = createBottomTabNavigator<HomeTabParamList>();
+
+  const fadeInAnim = useRef(new Animated.Value(0)).current;
+
+  /**
+   * Handles the fade-in effect after the initial loading screen
+   */
+  useEffect(() => {
+    Animated.timing(fadeInAnim, {
+      toValue: 1,
+      duration: 300,
+      useNativeDriver: Platform.OS !== "web",
+    }).start();
+  }, []);
+
+  /**
+   * A red round icon that draws user attention
+   * about profile related actions
+   */
+  const ProfileBadge = () => {
+    const { ghToken } = useSelector(userState);
+    const showProfileBadge = [!ghToken];
+
+    const tw = useTw();
+    return showProfileBadge.some((cond) => cond) ? (
+      <View
+        style={tw`absolute p-[2px] w-[20px] h-[20px] items-center justify-center -top-[8px] -right-2 rounded-lg bg-red`}
+      />
+    ) : null;
+  };
+
+  /**
+   * The bottom tab navigator
+   */
+  const TabNavigator = useCallback(
+    () => (
       <Tab.Navigator
         initialRouteName={"MainScreen"}
         screenOptions={({ route }) => ({
           headerShown: false,
           tabBarShowLabel: false,
-          tabBarIcon: ({ focused, color, size }) =>
+          tabBarIcon: ({ focused }) =>
             renderIcon({ name: route.name, focused }),
-          tabBarBadge: undefined,
-          tabBarStyle: {
-            backgroundColor: "black",
-            height: NAV_BAR_HEIGHT_PX,
-            borderTopWidth: 0,
-            borderTopRightRadius: 24,
-            borderTopLeftRadius: 24,
-          },
+          tabBarStyle: [
+            tw`bg-black rounded-t-xl`,
+            { height: NAV_BAR_HEIGHT_PX },
+          ],
         })}
       >
         <Tab.Screen name="MainScreen" component={MainScreen} />
         <Tab.Screen name="ProfileScreen" component={ProfileScreen} />
       </Tab.Navigator>
-    );
-  };
+    ),
+    [languageCode]
+  );
 
   const tabMenuIcons = {
     MainScreen: (focused: boolean) => (
@@ -85,6 +116,7 @@ export const AppNavigator = () => {
     focused: boolean;
   }) => {
     const TabMenuIcon = () => tabMenuIcons[name](focused);
+
     let label = "";
     switch (name) {
       case "MainScreen":
@@ -96,13 +128,13 @@ export const AppNavigator = () => {
     }
 
     return (
-      <View style={{ marginTop: 10, marginBottom: 6, alignItems: "center" }}>
+      <View style={tw`mt-[10px] mb-[6px] items-center`}>
         <TabMenuIcon />
         <Text
           color={focused ? "white" : "white60"}
           size="sm"
-          textStyle={{ textAlign: "center" }}
-          style={{ marginTop: 6, minWidth: 50 }}
+          textStyle={tw`text-center`}
+          style={tw`mt-[6px] min-w-[50px]`}
         >
           {label}
         </Text>
@@ -111,23 +143,13 @@ export const AppNavigator = () => {
     );
   };
 
-  const fadeInAnim = useRef(new Animated.Value(0)).current;
-
-  useEffect(() => {
-    Animated.timing(fadeInAnim, {
-      toValue: 1,
-      duration: 300,
-      useNativeDriver: Platform.OS !== "web",
-    }).start();
-  }, []);
-
   return (
     <Animated.View
       style={[tw`absolute top-0 w-full h-full`, { opacity: fadeInAnim }]}
     >
       <NavigationContainer
         documentTitle={{
-          formatter: (options, route) => `GitHub Stargazers`,
+          formatter: () => `GitHub Stargazers`,
         }}
       >
         <Stack.Navigator

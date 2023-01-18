@@ -1,5 +1,3 @@
-import { Dimensions, PixelRatio } from "react-native";
-
 const XxSmall = "xxs";
 const XSmall = "xs";
 const Small = "sm";

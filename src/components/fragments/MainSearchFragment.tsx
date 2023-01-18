@@ -1,19 +1,18 @@
 import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 import { CompositeNavigationProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { HomeTabParamList, RootStackParamList } from "../../navigation/screens";
+import { useMemo, useRef, useState } from "react";
 import { ActivityIndicator, Platform, View } from "react-native";
 import { AnimatedTextInput, Text } from "..";
-import { useTw } from "../../theme";
-import { i18n } from "../core/LanguageLoader";
-import { useRef, useState } from "react";
 import {
   getRepo,
   isError404NotFound,
   rateLimitExcedeed,
 } from "../../api/github";
+import { HomeTabParamList, RootStackParamList } from "../../navigation/screens";
+import { useTw } from "../../theme";
 import { showToast } from "../../utils";
-import { OctocatSvg } from "../../svgs";
+import { i18n } from "../core/LanguageLoader";
 
 export interface MainSearchFragmentProps {
   navigation: CompositeNavigationProp<
@@ -22,27 +21,36 @@ export interface MainSearchFragmentProps {
   >;
 }
 
+/**
+ * The search fragment of the main screen
+ */
 export function MainSearchFragment({ navigation }: MainSearchFragmentProps) {
-  const [tw] = useTw();
+  const tw = useTw();
 
-  const repoTextInputRef = useRef(null);
   const [userName, setUserName] = useState<string>("");
   const [repoName, setRepoName] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
 
-  const USERNAME_INPUT_WIDTH_PERC = Platform.OS === "web" ? 70 : 76;
+  const repoTextInputRef = useRef(null);
+
+  const usernameInputWidthPerc = useMemo(
+    () => (Platform.OS === "web" ? 70 : 76),
+    []
+  );
 
   const onUsernameInputValueChanged = (text: string) => {
     setUserName(text);
     setRepoName("");
   };
 
-  const onUsernameInputBlur = () => {};
-
   const onRepoNameInputValueChanged = (text: string) => {
     setRepoName(text);
   };
 
+  /**
+   * When user leaves the repo text input
+   * the search starts
+   */
   const onRepoNameInputBlur = () => {
     setLoading(true);
     fetchRepo();
@@ -54,7 +62,6 @@ export function MainSearchFragment({ navigation }: MainSearchFragmentProps) {
       const trimmedRepoName = repoName.trim();
       if (trimmedUserName.length === 0 || trimmedRepoName.length === 0) return;
       const repo = await getRepo(trimmedUserName, trimmedRepoName);
-      //TODO test not found
       navigation.navigate("RepoDetailScreen", {
         repo: repo,
       });
@@ -70,13 +77,12 @@ export function MainSearchFragment({ navigation }: MainSearchFragmentProps) {
     <View style={tw`h-full items-center`}>
       <View style={[tw`flex-row justify-center items-center mt-sm px-md`]}>
         <AnimatedTextInput
-          style={tw`w-[${USERNAME_INPUT_WIDTH_PERC}%]`}
+          style={tw`w-[${usernameInputWidthPerc}%]`}
           textStyle={tw`text-2xl font-bold`}
           labelStyle={tw`text-lg`}
           label={i18n.t("userName")}
           value={userName}
           onChangeText={onUsernameInputValueChanged}
-          onBlur={onUsernameInputBlur}
           returnKeyType="next"
           blurOnSubmit={false}
           onSubmitEditing={() => {

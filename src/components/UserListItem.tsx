@@ -7,8 +7,13 @@ export interface UserListItemProps {
   user: GitHubUser;
 }
 
+/**
+ * A simple component that shows a GitHub user
+ * as a list row
+ * @param user the GitHub user to be shown
+ */
 export function UserListItem({ user }: UserListItemProps) {
-  const [tw] = useTw();
+  const tw = useTw();
   return (
     <View
       style={tw`flex flex-row items-center py-sm border-b-[1px] border-grey`}
