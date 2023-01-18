@@ -31,7 +31,6 @@ export function MainSearchFragment({ navigation }: MainSearchFragmentProps) {
   const [loading, setLoading] = useState<boolean>(false);
 
   const USERNAME_INPUT_WIDTH_PERC = Platform.OS === "web" ? 70 : 76;
-  // const REPO_NAME_INPUT_WIDTH_PERC = Platform.OS === "web" ? 100 : 100;
 
   const onUsernameInputValueChanged = (text: string) => {
     setUserName(text);

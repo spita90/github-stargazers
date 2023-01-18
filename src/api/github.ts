@@ -16,12 +16,6 @@ export const getUserRepos = async (
         throw new DomainError("cannotGetUserRepos");
       }
       return response.data;
-    })
-    .catch((e) => {
-      if (isError404NotFound(e)) {
-        throw new DomainError("userNotFound");
-      }
-      throw e;
     });
 
 export const testGHToken = async (token: string): Promise<boolean> =>
@@ -55,12 +49,6 @@ export const getRepo = async (
         throw new DomainError("cannotGetRepoData");
       }
       return response.data;
-    })
-    .catch((e) => {
-      if (isError404NotFound(e)) {
-        throw new DomainError("repoNotFound");
-      }
-      throw e;
     });
 
 export const getRepoStargazers = async (
