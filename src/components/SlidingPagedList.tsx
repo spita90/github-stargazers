@@ -13,26 +13,22 @@ export interface SlidingPagedListProps {
   setPage: (page: number) => void;
   title?: string;
   backgroundColor?: ColorsType;
-  snapPoints: (string | number)[]; //starting from the top
-  initialSnapIndex: number;
-  height: number;
+  maxHeight: number;
   bottomMargin: number;
   visible: boolean;
   setVisible: (visible: boolean) => void;
-  sliderRef?: any;
+  listRef?: any;
 }
 
 export const SlidingPagedList = ({
-  sliderRef,
+  listRef,
   dataMatrix,
   renderItem,
   page,
   setPage,
   title,
   backgroundColor,
-  snapPoints,
-  initialSnapIndex,
-  height,
+  maxHeight,
   bottomMargin,
   visible,
   setVisible,
@@ -86,7 +82,7 @@ export const SlidingPagedList = ({
     <View
       style={[
         tw`flex flex-row items-center justify-between
-      pb-md`,
+      pb-sm`,
         { backgroundColor: backgroundColor },
       ]}
     >
@@ -101,23 +97,18 @@ export const SlidingPagedList = ({
     </View>
   );
 
-  useEffect(() => {
-    // sliderRef.current.snapTo(visible ? 0 : snapPoints.length - 1);
-  }, [visible]);
-
   return (
     <Animated.View
       style={[
         tw`absolute w-full`,
         { bottom: -bottomMargin },
-        // { height: height, bottom: 0 },
         { transform: [{ translateY: resultsViewSlideAnim }] },
       ]}
     >
       <View
         style={[
           { backgroundColor: backgroundColor },
-          { maxHeight: height },
+          { maxHeight: maxHeight },
           { width: Dimensions.get("window").width - 40, marginLeft: 20 },
           tw`p-sm
         border-t-3 border-l-3 border-r-3 border-grey 
@@ -126,7 +117,7 @@ export const SlidingPagedList = ({
       >
         <ListHeader />
         <FlatList
-          // ref={listRef}
+          ref={listRef}
           data={dataMatrix[page]}
           showsVerticalScrollIndicator={false}
           renderItem={({ item }) => renderItem(item)}

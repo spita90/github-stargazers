@@ -34,7 +34,7 @@ export function RepoDetailScreen({
   >([]);
   const [page, setPage] = useState<number>(0);
 
-  const stargazersSliderRef = useRef(null);
+  const stargazersListRef = useRef(null);
   const [stargazersSliderVisible, setStargazersSliderVisible] =
     useState<boolean>(false);
 
@@ -208,11 +208,9 @@ export function RepoDetailScreen({
               setPage={setPage}
               title={i18n.t("stargazers")}
               backgroundColor="white"
-              snapPoints={["30%", "100%"]}
-              initialSnapIndex={1}
               bottomMargin={0}
-              sliderRef={stargazersSliderRef}
-              height={600}
+              listRef={stargazersListRef}
+              maxHeight={(Dimensions.get("window").height * 64) / 100}
             />
           </>
         ) : (

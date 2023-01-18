@@ -28,8 +28,7 @@ export function MainListFragment({ navigation }: MainListFragmentProps) {
 
   const RESULTS_PER_PAGE = 20;
 
-  const resultsSliderRef = useRef(null);
-  const resultSliderSnapPoints = ["16%", "100%"];
+  const resultsListRef = useRef(null);
   const [userName, setUserName] = useState<string>("");
   const [resultsSliderVisible, setResultsSliderVisible] =
     useState<boolean>(false);
@@ -38,13 +37,13 @@ export function MainListFragment({ navigation }: MainListFragmentProps) {
   const [loading, setLoading] = useState<boolean>(false);
 
   const onUsernameInputFocus = () => {
-    // if (resultViewVisible) setResultViewVisible(false); //TODO
+    if (resultsSliderVisible) setResultsSliderVisible(false);
   };
 
   const onUsernameInputBlur = () => {
     if (
-      userName.trim().length === 0
-      // ||(resultViewVisible && pagedFoundRepos.length > 0)//TODO
+      userName.trim().length === 0 ||
+      (resultsSliderVisible && pagedFoundRepos.length > 0) //TODO
     )
       return;
     setPage(0);
@@ -64,14 +63,13 @@ export function MainListFragment({ navigation }: MainListFragmentProps) {
 
   useEffect(() => {
     //@ts-ignore
-    // resultsViewRef.current?.rlvRef.scrollToOffset(0, 0, false, false);
+    resultsListRef.current?.scrollToOffset({ animated: true, offset: 0 });
     if (pagedFoundRepos.length > 0 && !pagedFoundRepos[page + 1]) {
       fetchRepos([page + 1]);
     }
   }, [page]);
 
   const fetchRepos = async (pages: number[], showResults: boolean = false) => {
-    console.log(pages, showResults);
     const trimmedUserName = userName.trim();
     if (trimmedUserName.length === 0) return;
     try {
@@ -136,7 +134,6 @@ export function MainListFragment({ navigation }: MainListFragmentProps) {
         </View>
       )}
       <SlidingPagedList
-        //TODO fix hidden height problem in web
         visible={resultsSliderVisible}
         setVisible={(visible) => setResultsSliderVisible(visible)}
         dataMatrix={pagedFoundRepos}
@@ -145,11 +142,9 @@ export function MainListFragment({ navigation }: MainListFragmentProps) {
         setPage={setPage}
         title={i18n.t("repos")}
         backgroundColor="white"
-        snapPoints={resultSliderSnapPoints}
-        initialSnapIndex={1}
         bottomMargin={132}
-        sliderRef={resultsSliderRef}
-        height={500}
+        listRef={resultsListRef}
+        maxHeight={(Dimensions.get("window").height * 60) / 100}
       />
     </View>
   );
