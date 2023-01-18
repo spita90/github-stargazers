@@ -10,10 +10,10 @@ module.exports = {
       version: process.env.APP_VERSION,
     },
     orientation: "portrait",
-    icon: "./assets/icon.png",
+    icon: "./assets/favicon.png",
     userInterfaceStyle: "light",
     splash: {
-      image: "./assets/splash.png",
+      image: "./assets/favicon.png",
       resizeMode: "contain",
       backgroundColor: "#ffffff",
     },
@@ -26,7 +26,7 @@ module.exports = {
     },
     android: {
       adaptiveIcon: {
-        foregroundImage: "./assets/adaptive-icon.png",
+        foregroundImage: "./assets/favicon.png",
         backgroundColor: "#FFFFFF",
       },
     },

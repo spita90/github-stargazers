@@ -58,7 +58,7 @@ export function RepoDetailScreen({
 
   useEffect(() => {
     //@ts-ignore
-    // stargazersViewRef.current?.rlvRef.scrollToOffset(0, 0, false, false);
+    stargazersListRef.current?.scrollToOffset({ animated: true, offset: 0 });
     if (pagedRepoStargazers.length > 0 && !pagedRepoStargazers[page + 1]) {
       fetchStargazers([page + 1]);
     }

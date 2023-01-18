@@ -9,7 +9,6 @@ import {
   isError404NotFound,
   rateLimitExcedeed,
 } from "../../api/github";
-import { NAV_BAR_HEIGHT_PX } from "../../navigation/AppNavigator";
 import { HomeTabParamList, RootStackParamList } from "../../navigation/screens";
 import { useTw } from "../../theme";
 import { GitHubRepo } from "../../types";
@@ -43,7 +42,7 @@ export function MainListFragment({ navigation }: MainListFragmentProps) {
   const onUsernameInputBlur = () => {
     if (
       userName.trim().length === 0 ||
-      (resultsSliderVisible && pagedFoundRepos.length > 0) //TODO
+      (resultsSliderVisible && pagedFoundRepos.length > 0)
     )
       return;
     setPage(0);
