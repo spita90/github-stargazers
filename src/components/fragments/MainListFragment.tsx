@@ -35,7 +35,11 @@ export function MainListFragment({ navigation }: MainListFragmentProps) {
   const [loading, setLoading] = useState<boolean>(false);
   const [resultViewVisible, setResultViewVisible] = useState<boolean>(false);
 
-  const onFinishedInsertingUsername = () => {
+  const onUsernameInputFocus = () => {
+    if (resultViewVisible) setResultViewVisible(false);
+  };
+
+  const onUsernameInputBlur = () => {
     if (
       userName.trim().length === 0 ||
       (resultViewVisible && pagedFoundRepos.length > 0)
@@ -49,7 +53,7 @@ export function MainListFragment({ navigation }: MainListFragmentProps) {
     fetchRepos([0, 1], true);
   };
 
-  const onUserNameChanged = (text: string) => {
+  const onUsernameInputValueChanged = (text: string) => {
     setUserName(text);
     setPagedFoundRepos([]);
     setPage(0);
@@ -98,8 +102,7 @@ export function MainListFragment({ navigation }: MainListFragmentProps) {
       repo={repo}
       onPress={() => {
         navigation.navigate("RepoDetailScreen", {
-          devUsername: repo.owner.login,
-          repoName: repo.name,
+          repo: repo,
         });
       }}
     />
@@ -114,8 +117,9 @@ export function MainListFragment({ navigation }: MainListFragmentProps) {
           labelStyle={tw`text-lg`}
           label={i18n.t("userName")}
           value={userName}
-          onChangeText={onUserNameChanged}
-          onBlur={onFinishedInsertingUsername}
+          onChangeText={onUsernameInputValueChanged}
+          onFocus={onUsernameInputFocus}
+          onBlur={onUsernameInputBlur}
         />
       </View>
       {loading && (
@@ -124,7 +128,7 @@ export function MainListFragment({ navigation }: MainListFragmentProps) {
         </View>
       )}
       <SlidingPagedList
-        //TODO fix problem in web
+        //TODO fix hidden height problem in web
         dataMatrix={pagedFoundRepos}
         renderItem={renderListItem}
         page={page}
@@ -132,11 +136,13 @@ export function MainListFragment({ navigation }: MainListFragmentProps) {
         visible={resultViewVisible}
         setVisible={setResultViewVisible}
         title={i18n.t("repos")}
+        backgroundColor="white"
         estimatedItemSize={100}
         height={Dimensions.get("window").height - 286}
         bottomMargin={NAV_BAR_HEIGHT_PX}
         listRef={resultsViewRef}
       />
     </View>
+    // TODO insert nice svg bg
   );
 }

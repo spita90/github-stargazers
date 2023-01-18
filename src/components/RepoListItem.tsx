@@ -1,7 +1,7 @@
 import { View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Text } from ".";
-import { StarIconSvg } from "../svgs/StarIcon";
+import { StarIconSvg } from "../svgs";
 import { useTw } from "../theme";
 import { GitHubRepo } from "../types";
 

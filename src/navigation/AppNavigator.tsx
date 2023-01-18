@@ -1,15 +1,14 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import { useCallback, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { Animated, Platform, View } from "react-native";
 import { useSelector } from "react-redux";
 import { i18n } from "../components/core/LanguageLoader";
 import { Text } from "../components/Text";
 import { languageState, userState } from "../reducers/store";
 import { MainScreen, ProfileScreen, RepoDetailScreen } from "../screens";
-import { GitHubMarkSvg } from "../svgs/GitHubMark";
-import { ProfileIconSvg } from "../svgs/ProfileIcon";
+import { GitHubMarkSvg, ProfileIconSvg } from "../svgs";
 import { useTw } from "../theme";
 import { HomeTabParamList, RootStackParamList } from "./screens";
 

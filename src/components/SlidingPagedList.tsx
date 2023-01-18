@@ -89,7 +89,7 @@ export const SlidingPagedList = ({
           {title}
         </Text>
       )}
-      <Button style={tw`px-sm py-xs z-10`} onPress={() => setVisible(false)}>
+      <Button style={tw`px-sm py-xs`} onPress={() => setVisible(false)}>
         <Text color="white">X</Text>
       </Button>
     </View>
@@ -99,15 +99,17 @@ export const SlidingPagedList = ({
     <Animated.View
       style={[
         tw`absolute w-full`,
-        { backgroundColor: backgroundColor },
         { height: height, bottom: bottomMargin },
         { transform: [{ translateY: resultsViewSlideAnim }] },
       ]}
     >
       <View
-        style={tw`h-full mx-lg p-sm
+        style={[
+          { backgroundColor: backgroundColor },
+          tw`h-full mx-lg p-sm
         border-t-3 border-l-3 border-r-3 border-grey 
-        rounded-t-lg`}
+        rounded-t-lg`,
+        ]}
       >
         <ListHeader />
         <FlashList

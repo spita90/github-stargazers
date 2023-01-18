@@ -1,11 +1,11 @@
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { CompositeScreenProps } from "@react-navigation/native";
 import { StackScreenProps } from "@react-navigation/stack";
+import { GitHubRepo } from "../types";
 
 export type RootStackParamList = {
   RepoDetailScreen: {
-    devUsername: string;
-    repoName: string;
+    repo: GitHubRepo;
   };
   TabNavigation: undefined;
 };

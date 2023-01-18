@@ -1,5 +1,12 @@
 import { useEffect, useRef, useState } from "react";
-import { Animated, Dimensions, Easing, Platform, View } from "react-native";
+import {
+  Animated,
+  Dimensions,
+  Easing,
+  Keyboard,
+  Platform,
+  View,
+} from "react-native";
 import { WEB_APP_MAX_WIDTH_PX } from "../../App";
 import {
   MainListFragment,
@@ -9,6 +16,7 @@ import {
 } from "../components";
 import { i18n } from "../components/core/LanguageLoader";
 import { HomeTabScreenProps } from "../navigation/screens";
+import { OctocatSvg } from "../svgs";
 import { useTw } from "../theme";
 
 export function MainScreen({
@@ -17,6 +25,7 @@ export function MainScreen({
 }: HomeTabScreenProps<"MainScreen">) {
   const [tw] = useTw();
   const [toggleActiveIndex, setToggleActiveIndex] = useState(0);
+  const [keyboardOpen, setKeyboardOpen] = useState(false);
 
   const screenWidth = Math.min(
     WEB_APP_MAX_WIDTH_PX,
@@ -51,6 +60,32 @@ export function MainScreen({
     }).start();
   }, [toggleActiveIndex]);
 
+  useEffect(() => {
+    const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
+      setKeyboardOpen(true);
+    });
+    const hideSubscription = Keyboard.addListener("keyboardDidHide", () => {
+      setKeyboardOpen(false);
+    });
+    return () => {
+      showSubscription.remove();
+      hideSubscription.remove();
+    };
+  }, []);
+
+  const octocatOpacity = useRef(
+    new Animated.Value(keyboardOpen ? 0 : 1)
+  ).current;
+
+  useEffect(() => {
+    Animated.timing(octocatOpacity, {
+      toValue: keyboardOpen ? 0 : 1,
+      duration: 200,
+      easing: Easing.bezier(0.4, 0, 0.2, 1),
+      useNativeDriver: Platform.OS !== "web",
+    }).start();
+  }, [keyboardOpen]);
+
   return (
     <Screen>
       <View style={tw`flex items-center py-xl`}>
@@ -80,6 +115,15 @@ export function MainScreen({
           </Animated.View>
         </View>
       </View>
+      <Animated.View
+        style={[
+          { zIndex: -10 },
+          { opacity: octocatOpacity },
+          tw`absolute w-full bottom-[50px] flex items-center justify-center`,
+        ]}
+      >
+        <OctocatSvg width={200} height={200} />
+      </Animated.View>
     </Screen>
   );
 }
