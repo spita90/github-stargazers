@@ -1,9 +1,9 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ErrorBoundary } from "react-error-boundary";
-import { Dimensions, Platform, StyleSheet, View } from "react-native";
+import { Dimensions, Platform, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { RootSiblingParent } from "react-native-root-siblings";
-import { Provider, useSelector } from "react-redux";
+import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import {
   Browser as SentryBrowser,
@@ -15,7 +15,7 @@ import { AppLoader } from "./src/components/core/AppLoader";
 import { ErrorFragment } from "./src/components/fragments/ErrorFragment";
 import { config } from "./src/config";
 import { AppNavigator } from "./src/navigation/AppNavigator";
-import { languageState, persistor, store } from "./src/reducers/store";
+import { persistor, store } from "./src/reducers/store";
 import { useTw } from "./src/theme";
 import { DomainError } from "./src/types";
 
