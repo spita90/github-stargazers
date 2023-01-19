@@ -51,7 +51,7 @@ if (Platform.OS === "web") {
  */
 SentryInit({
   dsn: "https://0290e10b60bc4d02959a039c66014912@o4504496397156352.ingest.sentry.io/4504496400957440",
-  release: `github-stargazers:v${config.version}`,
+  release: config.version ? `github-stargazers:v${config.version}` : undefined,
   enableInExpoDevelopment: false,
   debug: __DEV__,
   tracesSampleRate: 1,

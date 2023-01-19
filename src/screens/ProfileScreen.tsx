@@ -204,11 +204,12 @@ export function ProfileScreen({
   );
 
   const AppVersion = useCallback(
-    () => (
-      <Text style={tw`absolute right-3 top-[6px]`} size={"sm"} color="grey">
-        v{config.version}
-      </Text>
-    ),
+    () =>
+      config.version ? (
+        <Text style={tw`absolute right-3 top-[6px]`} size={"sm"} color="grey">
+          v{config.version}
+        </Text>
+      ) : null,
     []
   );
 

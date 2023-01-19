@@ -18,6 +18,7 @@ export interface ToggleProps {
   label1: string;
   style?: StyleProp<TextStyle>;
   labelStyle?: StyleProp<TextStyle>;
+  testID?: string;
 }
 
 /**
@@ -34,8 +35,9 @@ export const Toggle = ({
   setActiveIndex,
   label0,
   label1,
-  labelStyle,
   style,
+  labelStyle,
+  testID,
 }: ToggleProps) => {
   const tw = useTw();
 
@@ -63,19 +65,19 @@ export const Toggle = ({
         activeIndex * (containerViewWidth - toggleViewWidth - 2 * PADDING_X_PX),
       duration: 500,
       easing: Easing.bezier(0.4, 0, 0.2, 1),
-      useNativeDriver: Platform.OS !== "web",
+      useNativeDriver: !testID ? Platform.OS !== "web" : false,
     }).start();
     Animated.timing(textFade0Anim, {
       toValue: 1 - activeIndex,
       duration: 500,
       easing: Easing.bezier(0.4, 0, 0.2, 1),
-      useNativeDriver: Platform.OS !== "web",
+      useNativeDriver: !testID ? Platform.OS !== "web" : false,
     }).start();
     Animated.timing(textFade1Anim, {
       toValue: activeIndex,
       duration: 500,
       easing: Easing.bezier(0.4, 0, 0.2, 1),
-      useNativeDriver: Platform.OS !== "web",
+      useNativeDriver: !testID ? Platform.OS !== "web" : false,
     }).start();
   }, [activeIndex]);
 
@@ -121,6 +123,7 @@ export const Toggle = ({
 
   return (
     <TouchableWithoutFeedback
+      testID={testID}
       onPress={() => {
         setActiveIndex((activeIndex + 1) % 2);
       }}

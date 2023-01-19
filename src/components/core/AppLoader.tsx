@@ -42,8 +42,8 @@ export function AppLoader({ children }: { children: JSX.Element }) {
   useEffect(() => {
     //App entry point
     if (config.environment !== "prod") {
-      console.log(config.environment);
-      console.log(config.version);
+      config.environment && console.log(config.environment);
+      config.version && console.log(config.version);
     }
 
     initializeApp();

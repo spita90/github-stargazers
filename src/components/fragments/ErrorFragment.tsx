@@ -56,9 +56,11 @@ export function ErrorFragment({ error }: ErrorPageProps) {
       <View
         style={tw`absolute right-6 bottom-6 w-[50%] h-[50px] justify-end items-end`}
       >
-        <Text size={"sm"} color="black">
-          v{config.version}
-        </Text>
+        {config.version && (
+          <Text size={"sm"} color="black">
+            v{config.version}
+          </Text>
+        )}
       </View>
     </View>
   );
