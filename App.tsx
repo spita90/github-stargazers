@@ -41,7 +41,11 @@ if (Platform.OS === "web") {
 }
 
 /**
- * Initializes Sentry bug-tracking capabilities
+ * Initializes Sentry bug-tracking capabilities.
+ *
+ * This will only work on Web and in EAS build: see
+ * https://docs.expo.dev/guides/using-sentry/
+ *
  * The DSN url is safe to keep public: see
  * https://docs.sentry.io/product/sentry-basics/dsn-explainer/
  */
