@@ -14,14 +14,15 @@ Run `yarn` to install all needed node modules.
 
 ##### Then, to develop:
 
-Run `yarn web` to run the App in the browser.
-Run `yarn android` to run the App in an Android emulator (Android SDK and Android Studio needed) or on a real debug device.
-Run `yarn ios` to run the App in an iOS simulator (Apple computer with XCode needed).
+Run `yarn web` to run the App in the browser.<br/>
+Run `yarn android` to run the App in an Android emulator (Android SDK and Android Studio needed) or on a real debug device.<br/>
+Run `yarn ios` to run the App in an iOS simulator (Apple computer with XCode needed).<br/>
 Run `yarn test` to run the included Jest test suite.
 
 ##### Finally, to build:
 
-Run `yarn build:web:staging` or `yarn build:web:prod` to build static web files (hostable on a web server) with respectively staging or prod environment. Once done, all output files will be in the `webapp` folder.
+Run `yarn build:web:staging` or `yarn build:web:prod` to build static web files (hostable on a web server) with respectively staging or prod environment. <br/>
+Once done, all output files will be in the `webapp` folder.<br/>
 If you need to host it in a subdirectory, be sure to change the `homepage` field in the package.json file.
 
 ## Technical details:
