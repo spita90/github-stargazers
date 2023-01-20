@@ -105,7 +105,7 @@ export const SlidingPagedList = ({
         </Button>
       </View>
     ),
-    [canGoBack, canGoNext]
+    [canGoBack, canGoNext, page]
   );
 
   const ListHeader = useCallback(
