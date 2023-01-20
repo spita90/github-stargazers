@@ -192,25 +192,6 @@ export function RepoDetailScreen({
     []
   );
 
-  const StargazersSlider = useCallback(
-    () => (
-      <SlidingPagedList
-        visible={stargazersSliderVisible}
-        setVisible={(visible) => setStargazersSliderVisible(visible)}
-        dataMatrix={pagedRepoStargazers}
-        renderItem={(user: GitHubUser) => <UserListItem user={user} />}
-        page={page}
-        setPage={setPage}
-        title={i18n.t("stargazers")}
-        backgroundColor="white"
-        bottomMargin={0}
-        listRef={stargazersListRef}
-        maxHeight={(Dimensions.get("window").height * 64) / 100}
-      />
-    ),
-    [stargazersSliderVisible]
-  );
-
   return (
     <Screen>
       <View style={tw`flex h-full items-center`}>
@@ -219,7 +200,19 @@ export function RepoDetailScreen({
           <AboveTheFold />
           <BelowTheFold />
         </ScrollView>
-        <StargazersSlider />
+        <SlidingPagedList
+          visible={stargazersSliderVisible}
+          setVisible={(visible) => setStargazersSliderVisible(visible)}
+          dataMatrix={pagedRepoStargazers}
+          renderItem={(user: GitHubUser) => <UserListItem user={user} />}
+          page={page}
+          setPage={setPage}
+          title={i18n.t("stargazers")}
+          backgroundColor="white"
+          bottomMargin={0}
+          listRef={stargazersListRef}
+          maxHeight={(Dimensions.get("window").height * 64) / 100}
+        />
       </View>
     </Screen>
   );
