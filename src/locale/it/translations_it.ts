@@ -26,7 +26,7 @@ export const TRANSLATIONS_IT = {
   specifyUserNameFirst: "Inserisci prima lo Username",
   changeLanguage: "Cambia lingua",
   throwTestError: "Lancia Error di test",
-  testErrorThrowed: "Error di test lanciato",
+  testErrorThrown: "Error di test lanciato",
   resetData: "Reset dati",
   resetDataMessage:
     "Ne sei sicuro? Per avviare la procedura fai un tap lungo, uno corto, e uno lungo ( ___ _ ___ )",

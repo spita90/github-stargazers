@@ -179,7 +179,7 @@ export function ProfileScreen({
           style={tw`border-2 border-black`}
           color="yellow"
           onPress={() => {
-            showToast(i18n.t("testErrorThrowed"));
+            showToast(i18n.t("testErrorThrown"));
             throw new Error("testError");
           }}
         >
