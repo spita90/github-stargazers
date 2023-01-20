@@ -8,8 +8,26 @@
     "android": "STAGE=local APP_VERSION=$npm_package_version-local expo start --android",
     "ios": "STAGE=local APP_VERSION=$npm_package_version-local expo start --ios",
     "web": "STAGE=local APP_VERSION=$npm_package_version-local expo start --web",
+    "test": "jest --watchAll",
     "build:web:staging": "STAGE=staging APP_VERSION=$npm_package_version-staging expo export:web && mv web-build webapp",
     "build:web:prod": "STAGE=prod APP_VERSION=$npm_package_version expo export:web && mv web-build webapp"
+  },
+  "jest": {
+    "preset": "jest-expo",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ],
+    "transformIgnorePatterns": [
+      "node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|@sentry/react-native|@sentry/core|native-base|react-native-svg)"
+    ],
+    "setupFiles": [
+      "<rootDir>/__mocks__/jestSetup.js"
+    ]
   },
   "dependencies": {
     "@babel/plugin-proposal-export-namespace-from": "^7.18.9",
@@ -49,8 +67,14 @@
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
+    "@testing-library/react-native": "^11.5.0",
+    "@types/jest": "^29.2.6",
     "@types/react": "~18.0.14",
     "@types/react-native": "~0.70.6",
+    "@types/react-test-renderer": "^18.0.0",
+    "jest": "^29.3.1",
+    "jest-expo": "^47.0.1",
+    "react-test-renderer": "^18.2.0",
     "typescript": "^4.6.3"
   },
   "private": true

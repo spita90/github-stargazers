@@ -1,0 +1,334 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders correctly 1`] = `
+<View
+  accessible={true}
+  focusable={true}
+  onClick={[Function]}
+  onLayout={[Function]}
+  onResponderGrant={[Function]}
+  onResponderMove={[Function]}
+  onResponderRelease={[Function]}
+  onResponderTerminate={[Function]}
+  onResponderTerminationRequest={[Function]}
+  onStartShouldSetResponder={[Function]}
+  style={
+    [
+      {
+        "backgroundColor": "#000",
+        "borderRadius": 26,
+        "display": "flex",
+        "justifyContent": "center",
+        "minWidth": 300,
+        "paddingBottom": 16,
+        "paddingTop": 16,
+        "width": "60%",
+      },
+      undefined,
+    ]
+  }
+  testID="toggle0"
+>
+  <View
+    collapsable={false}
+    onLayout={[Function]}
+    style={
+      {
+        "backgroundColor": "#fff",
+        "borderRadius": 16,
+        "height": "160%",
+        "position": "absolute",
+        "transform": [
+          {
+            "translateX": 10,
+          },
+        ],
+        "width": "48%",
+      }
+    }
+  />
+  <View
+    style={
+      {
+        "display": "flex",
+        "flexDirection": "row",
+        "justifyContent": "space-between",
+        "width": "100%",
+      }
+    }
+  >
+    <View
+      style={
+        {
+          "display": "flex",
+          "flexBasis": "0%",
+          "flexDirection": "row",
+          "flexGrow": 1,
+          "flexShrink": 1,
+          "justifyContent": "center",
+        }
+      }
+    >
+      <View
+        collapsable={false}
+        style={
+          {
+            "display": "flex",
+            "marginLeft": 24,
+            "marginRight": 24,
+            "opacity": 1,
+            "width": "50%",
+          }
+        }
+      >
+        <View
+          style={
+            [
+              [
+                {
+                  "marginBottom": 0,
+                  "marginLeft": 0,
+                  "marginRight": 0,
+                  "marginTop": 0,
+                },
+                {
+                  "backgroundColor": "transparent",
+                  "marginTop": undefined,
+                  "padding": undefined,
+                },
+              ],
+              undefined,
+            ]
+          }
+        >
+          <Text
+            style={
+              [
+                {
+                  "fontSize": 16,
+                },
+                {
+                  "fontFamily": "Circular-Std-Medium",
+                },
+                {
+                  "textAlign": "auto",
+                },
+                [
+                  {
+                    "textAlign": "center",
+                  },
+                  undefined,
+                ],
+                undefined,
+                {
+                  "color": "#000",
+                },
+              ]
+            }
+          >
+            Label0
+          </Text>
+        </View>
+      </View>
+      <View
+        collapsable={false}
+        style={
+          {
+            "display": "flex",
+            "marginLeft": 24,
+            "marginRight": 24,
+            "opacity": 0,
+            "position": "absolute",
+            "width": "50%",
+          }
+        }
+      >
+        <View
+          style={
+            [
+              [
+                {
+                  "marginBottom": 0,
+                  "marginLeft": 0,
+                  "marginRight": 0,
+                  "marginTop": 0,
+                },
+                {
+                  "backgroundColor": "transparent",
+                  "marginTop": undefined,
+                  "padding": undefined,
+                },
+              ],
+              undefined,
+            ]
+          }
+        >
+          <Text
+            style={
+              [
+                {
+                  "fontSize": 16,
+                },
+                {
+                  "fontFamily": "Circular-Std-Medium",
+                },
+                {
+                  "textAlign": "auto",
+                },
+                [
+                  {
+                    "textAlign": "center",
+                  },
+                  undefined,
+                ],
+                undefined,
+                {
+                  "color": "#fff",
+                },
+              ]
+            }
+          >
+            Label0
+          </Text>
+        </View>
+      </View>
+    </View>
+    <View
+      style={
+        {
+          "display": "flex",
+          "flexBasis": "0%",
+          "flexDirection": "row",
+          "flexGrow": 1,
+          "flexShrink": 1,
+          "justifyContent": "center",
+        }
+      }
+    >
+      <View
+        collapsable={false}
+        style={
+          {
+            "display": "flex",
+            "marginLeft": 24,
+            "marginRight": 24,
+            "opacity": 1,
+            "width": "50%",
+          }
+        }
+      >
+        <View
+          style={
+            [
+              [
+                {
+                  "marginBottom": 0,
+                  "marginLeft": 0,
+                  "marginRight": 0,
+                  "marginTop": 0,
+                },
+                {
+                  "backgroundColor": "transparent",
+                  "marginTop": undefined,
+                  "padding": undefined,
+                },
+              ],
+              undefined,
+            ]
+          }
+        >
+          <Text
+            style={
+              [
+                {
+                  "fontSize": 16,
+                },
+                {
+                  "fontFamily": "Circular-Std-Medium",
+                },
+                {
+                  "textAlign": "auto",
+                },
+                [
+                  {
+                    "textAlign": "center",
+                  },
+                  undefined,
+                ],
+                undefined,
+                {
+                  "color": "#fff",
+                },
+              ]
+            }
+          >
+            Label1
+          </Text>
+        </View>
+      </View>
+      <View
+        collapsable={false}
+        style={
+          {
+            "display": "flex",
+            "marginLeft": 24,
+            "marginRight": 24,
+            "opacity": 0,
+            "position": "absolute",
+            "width": "50%",
+          }
+        }
+      >
+        <View
+          style={
+            [
+              [
+                {
+                  "marginBottom": 0,
+                  "marginLeft": 0,
+                  "marginRight": 0,
+                  "marginTop": 0,
+                },
+                {
+                  "backgroundColor": "transparent",
+                  "marginTop": undefined,
+                  "padding": undefined,
+                },
+              ],
+              undefined,
+            ]
+          }
+        >
+          <Text
+            style={
+              [
+                {
+                  "fontSize": 16,
+                },
+                {
+                  "fontFamily": "Circular-Std-Medium",
+                },
+                {
+                  "textAlign": "auto",
+                },
+                [
+                  {
+                    "textAlign": "center",
+                  },
+                  undefined,
+                ],
+                undefined,
+                {
+                  "color": "#000",
+                },
+              ]
+            }
+          >
+            Label1
+          </Text>
+        </View>
+      </View>
+    </View>
+  </View>
+</View>
+`;

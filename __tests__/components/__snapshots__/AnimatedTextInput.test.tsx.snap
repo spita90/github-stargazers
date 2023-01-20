@@ -1,0 +1,72 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders correctly 1`] = `
+<View>
+  <TextInput
+    editable={true}
+    onBlur={[Function]}
+    onFocus={[Function]}
+    style={
+      [
+        {
+          "borderColor": "#000",
+          "borderRadius": 26,
+          "borderWidth": 3,
+          "fontSize": 16,
+          "paddingBottom": 24,
+          "paddingLeft": 24,
+          "paddingRight": 24,
+          "paddingTop": 24,
+        },
+        undefined,
+      ]
+    }
+    testID="ati0"
+  />
+  <View
+    accessible={true}
+    collapsable={false}
+    focusable={true}
+    onClick={[Function]}
+    onResponderGrant={[Function]}
+    onResponderMove={[Function]}
+    onResponderRelease={[Function]}
+    onResponderTerminate={[Function]}
+    onResponderTerminationRequest={[Function]}
+    onStartShouldSetResponder={[Function]}
+    style={
+      {
+        "backgroundColor": "#fff",
+        "borderRadius": 10,
+        "paddingLeft": 8,
+        "paddingRight": 8,
+        "position": "absolute",
+        "transform": [
+          {
+            "scale": 1,
+          },
+          {
+            "translateY": 24,
+          },
+          {
+            "translateX": 16,
+          },
+        ],
+      }
+    }
+  >
+    <Text
+      style={
+        [
+          {
+            "fontSize": 16,
+          },
+          undefined,
+        ]
+      }
+    >
+      dummy
+    </Text>
+  </View>
+</View>
+`;

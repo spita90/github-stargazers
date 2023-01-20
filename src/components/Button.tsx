@@ -15,6 +15,7 @@ export interface ButtonProps extends ViewProps {
   style?: StyleProp<ViewStyle>;
   children?: string | React.ReactNode;
   color?: ColorsType;
+  testID?: string;
 }
 
 /**
@@ -34,11 +35,13 @@ export const Button: React.FC<ButtonProps> = ({
   style,
   children,
   color,
+  testID,
 }: ButtonProps) => {
   const tw = useTw();
 
   return (
     <TouchableOpacity
+      testID={testID}
       activeOpacity={disabled ? 1 : 0.6}
       onPress={() => {
         if (!disabled && onPress) {

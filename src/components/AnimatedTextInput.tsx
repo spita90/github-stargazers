@@ -18,6 +18,7 @@ type Props = React.ComponentProps<typeof TextInput> & {
   label: string;
   editable?: boolean;
   textInputRef?: any;
+  testID?: string;
 };
 
 /**
@@ -43,6 +44,7 @@ export const AnimatedTextInput: React.FC<Props> = (props) => {
     style,
     onBlur,
     onFocus,
+    testID,
     ...restOfProps
   } = props;
   const tw = useTw();
@@ -60,7 +62,7 @@ export const AnimatedTextInput: React.FC<Props> = (props) => {
       toValue: isFocused || !!value ? 1 : 0,
       duration: 150,
       easing: Easing.bezier(0.4, 0, 0.2, 1),
-      useNativeDriver: Platform.OS !== "web",
+      useNativeDriver: !testID ? Platform.OS !== "web" : false,
     }).start();
   }, [focusAnim, isFocused, value]);
 
@@ -104,6 +106,7 @@ export const AnimatedTextInput: React.FC<Props> = (props) => {
   return (
     <View style={style}>
       <TextInput
+        testID={testID}
         style={[
           tw`p-6 border-3 border-${
             editable ? "black" : "grey"

@@ -24,6 +24,7 @@ export interface Props {
   padding?: number;
   allowFontScaling?: boolean;
   ignoreFontFamily?: boolean;
+  testID?: string;
 }
 
 /**
@@ -57,6 +58,7 @@ export function Text({
   padding,
   allowFontScaling,
   ignoreFontFamily,
+  testID,
 }: Props) {
   let bg = "transparent";
   const tw = useTw();
@@ -104,14 +106,18 @@ export function Text({
 
   if (onPress) {
     return (
-      <TouchableOpacity onPress={onPress} style={[wrapperStyle, style]}>
+      <TouchableOpacity
+        testID={testID}
+        onPress={onPress}
+        style={[wrapperStyle, style]}
+      >
         <TextComponent />
       </TouchableOpacity>
     );
   }
 
   return (
-    <View style={[wrapperStyle, style]}>
+    <View testID={testID} style={[wrapperStyle, style]}>
       <TextComponent />
     </View>
   );

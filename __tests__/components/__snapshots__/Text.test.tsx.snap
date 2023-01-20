@@ -1,0 +1,48 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders correctly 1`] = `
+<View
+  style={
+    [
+      [
+        {
+          "marginBottom": 0,
+          "marginLeft": 0,
+          "marginRight": 0,
+          "marginTop": 0,
+        },
+        {
+          "backgroundColor": "transparent",
+          "marginTop": undefined,
+          "padding": undefined,
+        },
+      ],
+      undefined,
+    ]
+  }
+  testID="text0"
+>
+  <Text
+    style={
+      [
+        {
+          "fontSize": 16,
+        },
+        {
+          "fontFamily": "Circular-Std-Medium",
+        },
+        {
+          "textAlign": "auto",
+        },
+        undefined,
+        undefined,
+        {
+          "color": "#000",
+        },
+      ]
+    }
+  >
+    dummy
+  </Text>
+</View>
+`;
