@@ -135,6 +135,7 @@ export const Toggle = ({
     >
       <View
         style={[
+          { cursor: "pointer" },
           tw`min-w-[300px] w-[60%] flex py-md rounded-lg justify-center bg-black`,
           style,
         ]}

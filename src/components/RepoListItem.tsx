@@ -21,7 +21,10 @@ export function RepoListItem({ repo, onPress }: RepoListItemProps) {
 
   return (
     <TouchableOpacity
-      style={tw`flex flex-row items-center py-sm border-b-[1px] border-grey`}
+      style={[
+        tw`flex flex-row items-center py-sm border-b-[1px] border-grey`,
+        { cursor: "pointer" },
+      ]}
       onPress={onPress}
     >
       <Text numberOfLines={1}>{repo.name}</Text>
