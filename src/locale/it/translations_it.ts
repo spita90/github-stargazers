@@ -14,7 +14,7 @@ export const TRANSLATIONS_IT = {
   userName: "Username",
   repoName: "Nome repo",
   language: "Linguaggio",
-  showStargazers: "Mostra stargazers",
+  showStargazers: "Mostra Stargazers",
   ghTokenDisclaimer:
     "Crea un Personal Access Token su GitHub per poter togliere i limiti di ricerca (circa 60 richieste all'ora). Una volta creato inseriscilo qui e premi Salva.",
   moreInfo: "Maggiori informazioni",
