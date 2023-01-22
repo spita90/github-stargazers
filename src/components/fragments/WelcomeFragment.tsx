@@ -161,7 +161,13 @@ export function WelcomeFragment() {
   );
 
   return (
-    <Animated.View style={[tw`flex flex-1`, { opacity: fadeAnim }]}>
+    <Animated.View
+      style={[
+        tw`flex flex-1 overflow-hidden`,
+        { width: SCREEN_AVAILABLE_WIDTH },
+        { opacity: fadeAnim },
+      ]}
+    >
       <Animated.View
         style={[
           tw`flex flex-row flex-8 justify-center`,
