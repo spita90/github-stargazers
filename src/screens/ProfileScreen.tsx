@@ -141,11 +141,8 @@ export function ProfileScreen({
   };
 
   const resetData = async () => {
-    // TODO if web: reset data + reload
-    // if native reset data, setFirstUse false, and navigate
-    wipeUser();
     clientResetGHToken();
-    navigation.navigate("MainScreen");
+    wipeUser();
   };
 
   const Header = useCallback(
