@@ -3,12 +3,17 @@ import { User } from "../types";
 import { store } from "./store";
 import { Buffer } from "buffer";
 
-const initialUserState: User = {};
+const initialUserState: User = {
+  firstUse: true,
+};
 
 const userSlice = createSlice({
   name: "user",
   initialState: initialUserState,
   reducers: {
+    _setFirstUse(state, action: PayloadAction<boolean>) {
+      state.firstUse = action.payload;
+    },
     /**
      * Token is not stored in plain text
      * but is base64 encoded
@@ -22,11 +27,15 @@ const userSlice = createSlice({
   },
 });
 
-const { _setGHToken, _wipe } = userSlice.actions;
+const { _setFirstUse, _setGHToken, _wipe } = userSlice.actions;
 
 /**
  * EXPORTED FUNCTIONS
  */
+
+export const setFirstUse = async (firstUse: boolean) => {
+  store.dispatch(_setFirstUse(firstUse));
+};
 
 export const setGHToken = async (token: string) => {
   store.dispatch(_setGHToken(token));
