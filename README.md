@@ -17,7 +17,7 @@ Run `yarn` to install all needed node modules.
 Run `yarn web` to run the App in the browser.<br/>
 Run `yarn android` to run the App in an Android emulator (Android SDK and Android Studio needed) or on a real debug device (turn on developer settings and USB debug).<br/>
 Run `yarn ios` to run the App in an iOS simulator (Apple computer with XCode needed).<br/>
-Run `yarn test` to run the included Jest test suite.
+Run `yarn test` to run the included Jest test suite (If some snapshot test fails it can be because a snapshot is old. Press the "u" key to update them, and it should run fine).
 
 ##### Finally, to build:
 
