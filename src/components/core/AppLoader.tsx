@@ -1,8 +1,11 @@
 import { useFonts } from "expo-font";
 import { useEffect, useRef, useState } from "react";
 import { Animated, Platform } from "react-native";
+import { useSelector } from "react-redux";
+import { Screen, WelcomeFragment } from "..";
 import { clientSetGHToken, getGitHubClient } from "../../api/client";
 import { config } from "../../config";
+import { userState } from "../../reducers/store";
 import { useTw } from "../../theme";
 import { LoadingFragment } from "../fragments/LoadingFragment";
 
@@ -11,6 +14,8 @@ import { LoadingFragment } from "../fragments/LoadingFragment";
  */
 export function AppLoader({ children }: { children: JSX.Element }) {
   const tw = useTw();
+
+  const { firstUse } = useSelector(userState);
 
   const [appInitialized, setappInitialized] = useState(false);
   const [canRenderChildren, setCanRenderChildren] = useState(false);
@@ -73,5 +78,11 @@ export function AppLoader({ children }: { children: JSX.Element }) {
     );
   }
 
-  return children ?? null;
+  return firstUse ? (
+    <Screen>
+      <WelcomeFragment />
+    </Screen>
+  ) : (
+    children
+  );
 }

@@ -18,6 +18,14 @@ export const TRANSLATIONS_IT = {
   ghTokenDisclaimer:
     "Crea un Personal Access Token su GitHub per poter togliere i limiti di ricerca (circa 60 richieste all'ora). Una volta creato inseriscilo qui e premi Salva.",
   moreInfo: "Maggiori informazioni",
+  hi: "Ciao!",
+  welcomeSearch:
+    "Cerchi una repo GitHub? Nella modalità Cerca puoi inserire l'username del proprietario e il nome della repo per trovarla!",
+  welcomeList:
+    "Mostrami tutto! Nella modalità Lista puoi cercare un utente GitHub per vedere tutte le sue repo!",
+  welcomeDetail:
+    "<Stargazers/> Mentre guardi i dettagli della repo premi Mostra Stargazers per vedere chi ha apprezzato il duro lavoro.",
+  end: "Fine",
   ghTokenPresent: "Token GitHub presente",
   tokenTestSucceded: "Il token è valido!",
   tokenTestFailed: "Il token fornito non è valido",

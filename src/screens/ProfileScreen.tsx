@@ -141,9 +141,8 @@ export function ProfileScreen({
   };
 
   const resetData = async () => {
-    wipeUser();
     clientResetGHToken();
-    navigation.navigate("MainScreen");
+    wipeUser();
   };
 
   const Header = useCallback(
