@@ -15,6 +15,9 @@ exports[`renders correctly 1`] = `
   style={
     [
       {
+        "cursor": "pointer",
+      },
+      {
         "backgroundColor": "#000",
         "borderRadius": 26,
         "display": "flex",
